@@ -1,5 +1,5 @@
 [package]
-name = "ignore-cli"
+name = "ignore_cli"
 version = "0.1.0"
 authors = ["Andrew Colannino <akc8012@gmail.com>"]
 edition = "2018"

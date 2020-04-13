@@ -1,5 +1,7 @@
 use clap::App;
 
+use ignore_cli::RequestMaker;
+
 fn main() {
 	App::new("ignore-cli")
 		.version("0.1.0")
@@ -7,5 +9,5 @@ fn main() {
 		.author("Andrew Colannino")
 		.get_matches();
 
-	println!("yahoo");
+	RequestMaker::make_request();
 }
