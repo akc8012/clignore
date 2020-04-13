@@ -1,0 +1,20 @@
+project:
+  https://github.com/github/gitignore
+  api: https://developer.github.com/v3/
+
+contains:
+  root: common templates
+  Global: tools/OS specific templates
+  community: very specific templates
+
+
+Requests [https://stackoverflow.com/questions/25022016/get-all-file-names-from-a-github-repo-through-the-github-api]:
+  https://api.github.com/repos/github/gitignore/commits?per_page=1
+    get the `sha`
+  https://api.github.com/repos/github/gitignore/git/commits/`sha`
+    get the `sha` of the `tree`
+  https://api.github.com/repos/github/gitignore/git/trees/`sha`?recursive=true
+
+
+Unauthenticated is 60 requests per hour
+Authenticated (with Basic Authentication or OAuth), 5000 requests per hour
