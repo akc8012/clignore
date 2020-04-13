@@ -8,3 +8,5 @@ edition = "2018"
 
 [dependencies]
 clap = "2.33.0"
+reqwest = "0.10.4"
+serde = "1.0.106"
