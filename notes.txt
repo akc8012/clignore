@@ -15,6 +15,17 @@ Requests [https://stackoverflow.com/questions/25022016/get-all-file-names-from-a
     get the `sha` of the `tree`
   https://api.github.com/repos/github/gitignore/git/trees/`sha`?recursive=true
 
+Send each with:
+  Authorization: token `OAUTH-TOKEN`
 
 Unauthenticated is 60 requests per hour
 Authenticated (with Basic Authentication or OAuth), 5000 requests per hour
+
+
+RequestMaker
+  Hide requests behind
+GithubRequestMaker
+  Hide Github-specific requests behind
+
+Idea: RequestMaker can compose a GithubRequestMaker
+	  For tests, GithubRequestMaker can compose a TestRequestMaker ;)

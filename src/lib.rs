@@ -1,9 +1,12 @@
-pub struct RequestMaker {
-
-}
+#[derive(Default)]
+pub struct RequestMaker {}
 
 impl RequestMaker {
-	pub fn make_request() {
+	pub fn new() -> RequestMaker {
+		RequestMaker {}
+	}
+
+	pub fn make_request(&self) {
 		println!("I am making a request now.");
 	}
 }
