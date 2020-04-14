@@ -27,7 +27,7 @@ RequestMaker
 GithubRequestMaker
   Hide Github-specific requests behind
 
-Idea: RequestMaker can compose a GithubRequestMaker
+Idea: GithubRequestMaker can compose a RequestMaker
 	  For tests, GithubRequestMaker can compose a TestRequestMaker ;)
 
 
