@@ -1,4 +1,5 @@
 use reqwest;
+use serde;
 use std::error::Error;
 
 #[derive(Default)]
@@ -14,9 +15,18 @@ impl RequestMaker {
 		Ok(body)
 	}
 
+	// todo: wrapper object for json value?
 	pub fn get_json(&self, url: &str) -> Result<serde_json::Value, Box<dyn Error>> {
 		let json = self.get_response(url)?.json()?;
 		Ok(json)
+	}
+
+	pub fn get_json_deserialized<T: serde::de::DeserializeOwned>(
+		&self,
+		url: &str,
+	) -> Result<T, Box<dyn Error>> {
+		let object: T = self.get_response(url)?.json()?;
+		Ok(object)
 	}
 
 	fn get_response(&self, url: &str) -> Result<reqwest::blocking::Response, Box<dyn Error>> {
@@ -34,7 +44,15 @@ impl RequestMaker {
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use serde_json::json;
+
+	#[derive(serde::Deserialize, Debug)]
+	#[allow(non_snake_case)]
+	struct TodoItem {
+		userId: i32,
+		id: i32,
+		title: String,
+		completed: bool,
+	}
 
 	#[test]
 	fn given_request_expect_response() {
@@ -59,18 +77,6 @@ mod tests {
 	}
 
 	#[test]
-	fn get_deserialized_json() {
-		let object = json!({
-			"A": ["a", "á", "à"],
-			"B": ["b", "b́"],
-			"C": ["c", "ć", "ć̣", "ḉ"],
-		});
-
-		assert_eq!(object["B"][0], json!("b"));
-		assert_eq!(object["B"][0], "b");
-	}
-
-	#[test]
 	fn get_json_request_value() {
 		let request_maker = RequestMaker::new();
 		let json = match request_maker.get_json("https://jsonplaceholder.typicode.com/todos/1") {
@@ -80,5 +86,19 @@ mod tests {
 
 		assert_eq!(json["id"], 1);
 		assert_eq!(json["completed"], false);
+	}
+
+	#[test]
+	fn get_deserialized_json_request_value() {
+		let request_maker = RequestMaker::new();
+		let todo: TodoItem = match request_maker
+			.get_json_deserialized("https://jsonplaceholder.typicode.com/todos/1")
+		{
+			Ok(todo) => todo,
+			Err(error) => panic!("Problem making the request: {}", error),
+		};
+
+		assert_eq!(todo.id, 1);
+		assert_eq!(todo.completed, false);
 	}
 }
