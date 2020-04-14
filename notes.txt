@@ -29,3 +29,10 @@ GithubRequestMaker
 
 Idea: RequestMaker can compose a GithubRequestMaker
 	  For tests, GithubRequestMaker can compose a TestRequestMaker ;)
+
+
+Rust applications are not asynchronous by default
+If you want to use asynchronous methods within our program, we need the `Tokio` framework
+  `Tokio` is apparently an asynchronous runtime for Rust
+  used in most reqwest examples
+EXCEPT: If we use the (optional) blocking module, we dont need this junk :)
