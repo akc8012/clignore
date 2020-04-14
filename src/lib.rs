@@ -45,6 +45,9 @@ impl RequestMaker {
 mod tests {
 	use super::*;
 
+	const TODO_URL: &str = "https://jsonplaceholder.typicode.com/todos/1";
+	const ERROR_MESSAGE: &str = "Problem making the request";
+
 	#[derive(serde::Deserialize, Debug)]
 	#[allow(non_snake_case)]
 	struct TodoItem {
@@ -56,20 +59,14 @@ mod tests {
 
 	#[test]
 	fn given_request_expect_response() {
-		let request_maker = RequestMaker::new();
-		let response = match request_maker.get("https://jsonplaceholder.typicode.com/todos/1") {
-			Ok(response) => response,
-			Err(error) => panic!("Problem making the request: {}", error),
-		};
-
+		let response = RequestMaker::new().get(TODO_URL).expect(ERROR_MESSAGE);
 		assert!(response.contains("\"id\": 1"), "Should receive JSON");
 	}
 
 	#[test]
 	fn given_bad_request_expect_error() {
-		let request_maker = RequestMaker::new();
 		assert!(
-			request_maker
+			RequestMaker::new()
 				.get("https://jsonplaceholder.typicode.com/dank-memes")
 				.is_err(),
 			"Should receive 404"
@@ -78,11 +75,7 @@ mod tests {
 
 	#[test]
 	fn get_json_request_value() {
-		let request_maker = RequestMaker::new();
-		let json = match request_maker.get_json("https://jsonplaceholder.typicode.com/todos/1") {
-			Ok(json) => json,
-			Err(error) => panic!("Problem making the request: {}", error),
-		};
+		let json = RequestMaker::new().get_json(TODO_URL).expect(ERROR_MESSAGE);
 
 		assert_eq!(json["id"], 1);
 		assert_eq!(json["completed"], false);
@@ -90,13 +83,9 @@ mod tests {
 
 	#[test]
 	fn get_deserialized_json_request_value() {
-		let request_maker = RequestMaker::new();
-		let todo: TodoItem = match request_maker
-			.get_json_deserialized("https://jsonplaceholder.typicode.com/todos/1")
-		{
-			Ok(todo) => todo,
-			Err(error) => panic!("Problem making the request: {}", error),
-		};
+		let todo: TodoItem = RequestMaker::new()
+			.get_json_deserialized(TODO_URL)
+			.expect(ERROR_MESSAGE);
 
 		assert_eq!(todo.id, 1);
 		assert_eq!(todo.completed, false);
