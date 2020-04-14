@@ -9,9 +9,9 @@ impl RequestMaker {
 		RequestMaker {}
 	}
 
-	pub fn make_request(&self) -> Result<String, Box<dyn Error>> {
-		let body = reqwest::blocking::get("https://www.rust-lang.org")?.text()?;
-		Ok(body)
+	pub fn make_request(&self, url: &str) -> Result<String, Box<dyn Error>> {
+		let response = reqwest::blocking::get(url)?.text()?;
+		Ok(response)
 	}
 }
 
@@ -20,11 +20,13 @@ mod tests {
 	use super::*;
 
 	#[test]
-	fn cheese() {
+	fn given_get_request_expect_response() {
 		let request_maker = RequestMaker::new();
-		match request_maker.make_request() {
-			Ok(body) => println!("body = {:?}", body),
+		let response = match request_maker.make_request("https://jsonplaceholder.typicode.com/todos/1") {
+			Ok(response) => response,
 			Err(error) => panic!("Problem making the request: {}", error)
-		}
+		};
+
+		assert!(response.contains("\"id\": 1"));
 	}
 }
