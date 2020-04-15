@@ -21,14 +21,14 @@ impl GitHubRequestMaker {
 	}
 }
 
-#[cfg(test)]
-mod tests {
-	use super::*;
-	const ERROR_MESSAGE: &str = "Problem making the request";
+// #[cfg(test)]
+// mod tests {
+// 	use super::*;
+// 	const ERROR_MESSAGE: &str = "Problem making the request";
 
-	#[test]
-	fn talk_to_github() {
-		let response = GitHubRequestMaker::make_github_request().expect(ERROR_MESSAGE);
-		assert!(response.contains("\"limit\": {"), "Should receive JSON");
-	}
-}
+// 	#[test]
+// 	fn get_github_rate_limit() {
+// 		let response = GitHubRequestMaker::make_github_request().expect(ERROR_MESSAGE);
+// 		assert!(response.contains("\"limit\": {"), "Should receive JSON");
+// 	}
+// }

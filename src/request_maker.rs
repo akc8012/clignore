@@ -26,7 +26,7 @@ impl RequestMaker {
 	}
 
 	fn get_response(url: &str) -> Result<reqwest::blocking::Response, ErrorBox> {
-		let response = reqwest::blocking::get(url)?;
+		let response = Self::create_client().get(url).send()?;
 
 		let status = response.status();
 		if status != 200 {
@@ -36,6 +36,15 @@ impl RequestMaker {
 
 		Ok(response)
 	}
+
+	fn create_client() -> reqwest::blocking::Client {
+		let user_agent: &str = concat!(env!("CARGO_PKG_NAME"), "/", env!("CARGO_PKG_VERSION"),);
+
+		reqwest::blocking::Client::builder()
+			.user_agent(user_agent)
+			.build()
+			.expect("Can't create client")
+	}
 }
 
 #[cfg(test)]
@@ -43,7 +52,7 @@ mod tests {
 	use super::*;
 
 	const TODO_URL: &str = "https://jsonplaceholder.typicode.com/todos/1";
-	const ERROR_MESSAGE: &str = "Problem making the request";  // TODO: Make pub?
+	const ERROR_MESSAGE: &str = "Problem making the request"; // TODO: Make pub?
 
 	#[derive(serde::Deserialize, Debug)]
 	#[allow(non_snake_case)]
@@ -62,10 +71,8 @@ mod tests {
 
 	#[test]
 	fn given_bad_request_expect_error() {
-		assert!(
-			RequestMaker::get("https://jsonplaceholder.typicode.com/dank-memes").is_err(),
-			"Should receive 404"
-		);
+		let url = "https://jsonplaceholder.typicode.com/dank-memes";
+		assert!(RequestMaker::get(url).is_err(), "Should receive 404");
 	}
 
 	#[test]
@@ -82,5 +89,13 @@ mod tests {
 
 		assert_eq!(todo.id, 1);
 		assert_eq!(todo.completed, false);
+	}
+
+	#[test]
+	fn get_request_that_requires_user_agent() {
+		let url = "https://api.github.com/rate_limit"; // rate_limit doesn't incur API hit
+
+		let response = RequestMaker::get(&url).expect(ERROR_MESSAGE);
+		assert!(response.contains("\"limit\":"), "Should receive JSON");
 	}
 }
