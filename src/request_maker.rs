@@ -6,7 +6,7 @@ type ErrorBox = Box<dyn std::error::Error>;
 #[derive(Default)]
 pub struct RequestMaker;
 
-#[allow(dead_code)]   // TODO: REMOVE WHEN CODE IS CALLED IN MAIN!!!!!!!!!
+#[allow(dead_code)] // TODO: REMOVE WHEN CODE IS CALLED IN MAIN!!!!!!!!!
 impl RequestMaker {
 	pub fn get(url: &str) -> Result<String, ErrorBox> {
 		let body = Self::get_response(url)?.text()?;

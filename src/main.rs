@@ -1,5 +1,6 @@
 use clap::App;
 mod request_maker;
+mod github_request_maker;
 
 fn main() {
 	App::new("ignore_cli")
