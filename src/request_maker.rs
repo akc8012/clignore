@@ -6,13 +6,14 @@ type ErrorBox = Box<dyn std::error::Error>;
 #[derive(Default)]
 pub struct RequestMaker;
 
+#[allow(dead_code)]   // TODO: REMOVE WHEN CODE IS CALLED IN MAIN!!!!!!!!!
 impl RequestMaker {
 	pub fn get(url: &str) -> Result<String, ErrorBox> {
 		let body = Self::get_response(url)?.text()?;
 		Ok(body)
 	}
 
-	// todo: wrapper object for json value?
+	// TODO: wrapper object for json value?
 	pub fn get_json(url: &str) -> Result<serde_json::Value, ErrorBox> {
 		let json = Self::get_response(url)?.json()?;
 		Ok(json)
