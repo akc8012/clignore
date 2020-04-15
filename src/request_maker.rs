@@ -30,7 +30,8 @@ impl RequestMaker {
 
 		let status = response.status();
 		if status != 200 {
-			return Err(format!("Received status code: {}", status).into());
+			let body = response.text().unwrap_or_default();
+			return Err(format!("Received: {}: {}", status, body).into());
 		}
 
 		Ok(response)

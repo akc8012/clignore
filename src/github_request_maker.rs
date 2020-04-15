@@ -29,6 +29,6 @@ mod tests {
 	#[test]
 	fn talk_to_github() {
 		let response = GitHubRequestMaker::make_github_request().expect(ERROR_MESSAGE);
-		assert!(response.contains("\"rate\": {"), "Should receive JSON");
+		assert!(response.contains("\"limit\": {"), "Should receive JSON");
 	}
 }
