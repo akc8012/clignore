@@ -1,6 +1,7 @@
 use reqwest;
 use serde::de::DeserializeOwned;
 
+// TODO: Make pub, to use in GitHubRequestMaker
 type ErrorBox = Box<dyn std::error::Error>;
 
 #[derive(Default)]
@@ -41,7 +42,7 @@ mod tests {
 	use super::*;
 
 	const TODO_URL: &str = "https://jsonplaceholder.typicode.com/todos/1";
-	const ERROR_MESSAGE: &str = "Problem making the request";
+	const ERROR_MESSAGE: &str = "Problem making the request";  // TODO: Make pub?
 
 	#[derive(serde::Deserialize, Debug)]
 	#[allow(non_snake_case)]
