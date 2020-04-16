@@ -1,22 +1,15 @@
-use crate::auth_token::AuthToken;
-use crate::request_maker::RequestMaker;
 use crate::response_getter::ResponseGetter;
 
 type ErrorBox = Box<dyn std::error::Error>;
 
-#[derive(Default)]
-pub struct GitHubRequestMaker {
-	request_maker: RequestMaker,
+pub struct GitHubRequestMaker<T: ResponseGetter> {
+	request_maker: T,
 }
 
 #[allow(dead_code)] // TODO: REMOVE WHEN CODE IS CALLED IN MAIN!!!!!!!!!
-impl GitHubRequestMaker {
-	pub fn new() -> GitHubRequestMaker {
-		let token = AuthToken::new("token.txt");
-
-		GitHubRequestMaker {
-			request_maker: RequestMaker::new(Some(token)),
-		}
+impl<T: ResponseGetter> GitHubRequestMaker<T> {
+	pub fn new(request_maker: T) -> GitHubRequestMaker<T> {
+		GitHubRequestMaker { request_maker }
 	}
 
 	pub fn get_latest_commit_id(&self) -> Result<String, ErrorBox> {
@@ -32,11 +25,16 @@ impl GitHubRequestMaker {
 #[cfg(test)]
 mod tests {
 	use super::*;
+	use crate::auth_token::AuthToken;
+	use crate::request_maker::RequestMaker;
+
 	const ERROR_MESSAGE: &str = "Problem making the request";
 
 	#[test]
 	fn can_get_latest_commit_id() {
-		let request_maker = GitHubRequestMaker::new();
+		let token = AuthToken::new("token.txt");
+		let requester = RequestMaker::new(Some(token));
+		let request_maker = GitHubRequestMaker::new(requester);
 
 		let latest_commit_id = request_maker.get_latest_commit_id().expect(ERROR_MESSAGE);
 
