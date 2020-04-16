@@ -1,5 +1,7 @@
-use reqwest;
+use reqwest::{blocking, header};
 use serde::de::DeserializeOwned;
+use std::fs::File;
+use std::io::Read;
 
 // TODO: Make pub, to use in GitHubRequestMaker
 type ErrorBox = Box<dyn std::error::Error>;
@@ -20,12 +22,13 @@ impl RequestMaker {
 		Ok(json)
 	}
 
+	// TODO: this can just call get_json
 	pub fn get_json_deserialized<T: DeserializeOwned>(url: &str) -> Result<T, ErrorBox> {
 		let object: T = Self::get_response(url)?.json()?;
 		Ok(object)
 	}
 
-	fn get_response(url: &str) -> Result<reqwest::blocking::Response, ErrorBox> {
+	fn get_response(url: &str) -> Result<blocking::Response, ErrorBox> {
 		let response = Self::create_client().get(url).send()?;
 
 		let status = response.status();
@@ -37,11 +40,24 @@ impl RequestMaker {
 		Ok(response)
 	}
 
-	fn create_client() -> reqwest::blocking::Client {
+	fn create_client() -> blocking::Client {
 		let user_agent: &str = concat!(env!("CARGO_PKG_NAME"), "/", env!("CARGO_PKG_VERSION"),);
 
-		reqwest::blocking::Client::builder()
+		let mut token = String::new();
+		File::open("token.txt")
+			.unwrap()
+			.read_to_string(&mut token)
+			.unwrap();
+
+		let mut headers = header::HeaderMap::new();
+		headers.insert(
+			header::AUTHORIZATION,
+			header::HeaderValue::from_str(&token).unwrap(),
+		);
+
+		blocking::Client::builder()
 			.user_agent(user_agent)
+			.default_headers(headers)
 			.build()
 			.expect("Can't create client")
 	}
@@ -97,5 +113,13 @@ mod tests {
 
 		let response = RequestMaker::get(&url).expect(ERROR_MESSAGE);
 		assert!(response.contains("\"limit\":"), "Should receive JSON");
+	}
+
+	#[test]
+	fn get_request_with_custom_header() {
+		let url = "https://api.github.com/rate_limit";
+
+		let json = RequestMaker::get_json(&url).expect(ERROR_MESSAGE);
+		assert_eq!(json["resources"]["core"]["limit"], 5000); // rate_limit at 5000 when using auth header
 	}
 }
