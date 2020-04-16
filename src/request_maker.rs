@@ -1,18 +1,20 @@
+use crate::auth_token::AuthToken;
+
 use reqwest::{blocking, header};
 use serde::de::DeserializeOwned;
-use std::fs::File;
-use std::io::Read;
 
 // TODO: Make pub, to use in GitHubRequestMaker
 type ErrorBox = Box<dyn std::error::Error>;
 
 #[derive(Default)]
-pub struct RequestMaker;
+pub struct RequestMaker {
+	token: Option<AuthToken>,
+}
 
 #[allow(dead_code)] // TODO: REMOVE WHEN CODE IS CALLED IN MAIN!!!!!!!!!
 impl RequestMaker {
-	pub fn new() -> RequestMaker {
-		RequestMaker {}
+	pub fn new(token: Option<AuthToken>) -> RequestMaker {
+		RequestMaker { token }
 	}
 
 	pub fn get(&self, url: &str) -> Result<String, ErrorBox> {
@@ -45,16 +47,15 @@ impl RequestMaker {
 	fn create_client(&self) -> blocking::Client {
 		let user_agent: &str = concat!(env!("CARGO_PKG_NAME"), "/", env!("CARGO_PKG_VERSION"),);
 
-		let mut token = String::new();
-		File::open("token.txt")
-			.unwrap()
-			.read_to_string(&mut token)
-			.unwrap();
+		let token_value = match self.token.as_ref() {
+			Some(token) => token.to_string(),
+			None => String::new(),
+		};
 
 		let mut headers = header::HeaderMap::new();
 		headers.insert(
 			header::AUTHORIZATION,
-			header::HeaderValue::from_str(&token).unwrap(),
+			header::HeaderValue::from_str(&token_value).expect("wtf"),
 		);
 
 		blocking::Client::builder()
@@ -83,19 +84,24 @@ mod tests {
 
 	#[test]
 	fn given_request_expect_response() {
-		let response = RequestMaker::new().get(TODO_URL).expect(ERROR_MESSAGE);
+		let response = RequestMaker::new(None).get(TODO_URL).expect(ERROR_MESSAGE);
 		assert!(response.contains("\"id\": 1"), "Should receive JSON");
 	}
 
 	#[test]
 	fn given_bad_request_expect_error() {
 		let url = "https://jsonplaceholder.typicode.com/dank-memes";
-		assert!(RequestMaker::new().get(url).is_err(), "Should receive 404");
+		assert!(
+			RequestMaker::new(None).get(url).is_err(),
+			"Should receive 404"
+		);
 	}
 
 	#[test]
 	fn get_json_request_value() {
-		let json = RequestMaker::new().get_json(TODO_URL).expect(ERROR_MESSAGE);
+		let json = RequestMaker::new(None)
+			.get_json(TODO_URL)
+			.expect(ERROR_MESSAGE);
 
 		assert_eq!(json["id"], 1);
 		assert_eq!(json["completed"], false);
@@ -103,7 +109,7 @@ mod tests {
 
 	#[test]
 	fn get_deserialized_json_request_value() {
-		let todo: TodoItem = RequestMaker::new()
+		let todo: TodoItem = RequestMaker::new(None)
 			.get_json_deserialized(TODO_URL)
 			.expect(ERROR_MESSAGE);
 
@@ -115,15 +121,18 @@ mod tests {
 	fn get_request_that_requires_user_agent() {
 		let url = "https://api.github.com/rate_limit"; // rate_limit doesn't incur API hit
 
-		let response = RequestMaker::new().get(&url).expect(ERROR_MESSAGE);
+		let response = RequestMaker::new(None).get(&url).expect(ERROR_MESSAGE);
 		assert!(response.contains("\"limit\":"), "Should receive JSON");
 	}
 
 	#[test]
 	fn get_request_with_custom_header() {
 		let url = "https://api.github.com/rate_limit";
+		let token = AuthToken::new("token.txt");
 
-		let json = RequestMaker::new().get_json(&url).expect(ERROR_MESSAGE);
+		let json = RequestMaker::new(Some(token))
+			.get_json(&url)
+			.expect(ERROR_MESSAGE);
 		assert_eq!(json["resources"]["core"]["limit"], 5000); // rate_limit at 5000 when using auth header
 	}
 }
