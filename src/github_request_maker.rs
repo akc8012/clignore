@@ -1,5 +1,6 @@
 use crate::auth_token::AuthToken;
 use crate::request_maker::RequestMaker;
+use crate::response_getter::ResponseGetter;
 
 type ErrorBox = Box<dyn std::error::Error>;
 
