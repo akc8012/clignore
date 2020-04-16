@@ -1,13 +1,13 @@
-use crate::response_getter::ResponseGetter;
+use crate::requester::Requester;
 
 type ErrorBox = Box<dyn std::error::Error>;
 
-pub struct GitHubRequestMaker<T: ResponseGetter> {
+pub struct GitHubRequestMaker<T: Requester> {
 	request_maker: T,
 }
 
 #[allow(dead_code)] // TODO: REMOVE WHEN CODE IS CALLED IN MAIN!!!!!!!!!
-impl<T: ResponseGetter> GitHubRequestMaker<T> {
+impl<T: Requester> GitHubRequestMaker<T> {
 	pub fn new(request_maker: T) -> GitHubRequestMaker<T> {
 		GitHubRequestMaker { request_maker }
 	}

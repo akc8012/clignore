@@ -1,5 +1,5 @@
 use crate::auth_token::AuthToken;
-use crate::response_getter::{ErrorBox, ResponseGetter};
+use crate::requester::{ErrorBox, Requester};
 
 use reqwest::{blocking, header};
 use serde::de::DeserializeOwned;
@@ -9,7 +9,7 @@ pub struct RequestMaker {
 	token: Option<AuthToken>,
 }
 
-impl ResponseGetter for RequestMaker {
+impl Requester for RequestMaker {
 	fn get(&self, url: &str) -> Result<String, ErrorBox> {
 		let body = self.get_response(url)?.text()?;
 		Ok(body)
