@@ -47,22 +47,28 @@ impl RequestMaker {
 	fn create_client(&self) -> blocking::Client {
 		let user_agent: &str = concat!(env!("CARGO_PKG_NAME"), "/", env!("CARGO_PKG_VERSION"),);
 
-		let token_value = match self.token.as_ref() {
-			Some(token) => token.to_string(),
-			None => String::new(),
-		};
+		blocking::Client::builder()
+			.user_agent(user_agent)
+			.default_headers(self.get_headers())
+			.build()
+			.expect("Can't create client")
+	}
 
+	fn get_headers(&self) -> header::HeaderMap {
 		let mut headers = header::HeaderMap::new();
 		headers.insert(
 			header::AUTHORIZATION,
-			header::HeaderValue::from_str(&token_value).expect("wtf"),
+			header::HeaderValue::from_str(&self.get_token_value()).expect("wtf"),
 		);
 
-		blocking::Client::builder()
-			.user_agent(user_agent)
-			.default_headers(headers)
-			.build()
-			.expect("Can't create client")
+		headers
+	}
+
+	fn get_token_value(&self) -> String {
+		match self.token.as_ref() {
+			Some(token) => token.to_string(),
+			None => String::new(),
+		}
 	}
 }
 
