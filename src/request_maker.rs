@@ -56,19 +56,14 @@ impl RequestMaker {
 
 	fn get_headers(&self) -> header::HeaderMap {
 		let mut headers = header::HeaderMap::new();
-		headers.insert(
-			header::AUTHORIZATION,
-			header::HeaderValue::from_str(&self.get_token_value()).expect("wtf"),
-		);
 
-		headers
-	}
-
-	fn get_token_value(&self) -> String {
-		match self.token.as_ref() {
-			Some(token) => token.to_string(),
-			None => String::new(),
+		if let Some(token) = &self.token {
+			headers.insert(
+				header::AUTHORIZATION,
+				header::HeaderValue::from_str(&token.to_string()).expect("wtf"),
+			);
 		}
+		headers
 	}
 }
 
