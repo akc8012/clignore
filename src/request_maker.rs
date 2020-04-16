@@ -22,11 +22,9 @@ impl RequestMaker {
 
 	// TODO: wrapper object for json value?
 	pub fn get_json(&self, url: &str) -> Result<serde_json::Value, ErrorBox> {
-		let json = self.get_response(url)?.json()?;
-		Ok(json)
+		self.get_json_deserialized(url)
 	}
 
-	// TODO: this can just call get_json
 	pub fn get_json_deserialized<T: DeserializeOwned>(&self, url: &str) -> Result<T, ErrorBox> {
 		let object: T = self.get_response(url)?.json()?;
 		Ok(object)
