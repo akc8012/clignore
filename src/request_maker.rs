@@ -1,35 +1,35 @@
 use crate::auth_token::AuthToken;
+use crate::response_getter::{ErrorBox, ResponseGetter};
 
 use reqwest::{blocking, header};
 use serde::de::DeserializeOwned;
-
-// TODO: Make pub, to use in GitHubRequestMaker
-type ErrorBox = Box<dyn std::error::Error>;
 
 #[derive(Default)]
 pub struct RequestMaker {
 	token: Option<AuthToken>,
 }
 
-#[allow(dead_code)] // TODO: REMOVE WHEN CODE IS CALLED IN MAIN!!!!!!!!!
-impl RequestMaker {
-	pub fn new(token: Option<AuthToken>) -> RequestMaker {
-		RequestMaker { token }
-	}
-
-	pub fn get(&self, url: &str) -> Result<String, ErrorBox> {
+impl ResponseGetter for RequestMaker {
+	fn get(&self, url: &str) -> Result<String, ErrorBox> {
 		let body = self.get_response(url)?.text()?;
 		Ok(body)
 	}
 
 	// TODO: wrapper object for json value?
-	pub fn get_json(&self, url: &str) -> Result<serde_json::Value, ErrorBox> {
+	fn get_json(&self, url: &str) -> Result<serde_json::Value, ErrorBox> {
 		self.get_json_deserialized(url)
 	}
 
-	pub fn get_json_deserialized<T: DeserializeOwned>(&self, url: &str) -> Result<T, ErrorBox> {
+	fn get_json_deserialized<T: DeserializeOwned>(&self, url: &str) -> Result<T, ErrorBox> {
 		let object: T = self.get_response(url)?.json()?;
 		Ok(object)
+	}
+}
+
+#[allow(dead_code)] // TODO: REMOVE WHEN CODE IS CALLED IN MAIN!!!!!!!!!
+impl RequestMaker {
+	pub fn new(token: Option<AuthToken>) -> RequestMaker {
+		RequestMaker { token }
 	}
 
 	fn get_response(&self, url: &str) -> Result<blocking::Response, ErrorBox> {

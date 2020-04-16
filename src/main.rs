@@ -2,6 +2,7 @@ use clap::App;
 mod request_maker;
 mod github_request_maker;
 mod auth_token;
+mod response_getter;
 
 fn main() {
 	App::new("ignore_cli")
