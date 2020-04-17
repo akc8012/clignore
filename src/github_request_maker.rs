@@ -25,19 +25,17 @@ impl<T: Requester> GitHubRequestMaker<T> {
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use crate::auth_token::AuthToken;
-	use crate::request_maker::RequestMaker;
+	use crate::test_request_maker::TestRequestMaker;
 
 	const ERROR_MESSAGE: &str = "Problem making the request";
 
 	#[test]
 	fn can_get_latest_commit_id() {
-		let token = AuthToken::new("token.txt");
-		let requester = RequestMaker::new(Some(token));
+		let requester = TestRequestMaker::new();
 		let request_maker = GitHubRequestMaker::new(requester);
 
 		let latest_commit_id = request_maker.get_latest_commit_id().expect(ERROR_MESSAGE);
 
-		assert_eq!(latest_commit_id, "80587386dd48334c304819abcc4a09877cf99e21");
+		assert_eq!(latest_commit_id, "9431e108b67d1efa9df54e6351da1951bcd9be32");
 	}
 }
