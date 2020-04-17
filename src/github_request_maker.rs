@@ -14,6 +14,7 @@ impl<T: Requester> GitHubRequestMaker<T> {
 		GitHubRequestMaker { request_maker }
 	}
 
+	// TODO: Better error handling on expects here
 	pub fn get_tree_id(&self) -> Result<String, ErrorBox> {
 		let json = self
 			.request_maker
@@ -24,6 +25,20 @@ impl<T: Requester> GitHubRequestMaker<T> {
 			.expect("wtf")
 			.to_string();
 		Ok(sha)
+	}
+
+	pub fn get_file_names(&self, tree_id: &str) -> Result<Vec<String>, ErrorBox> {
+		let json = self.request_maker.get_json(&format!(
+			"https://api.github.com/repos/github/gitignore/git/trees/{}?recursive=true",
+			tree_id
+		))?;
+
+		let mut file_names = Vec::new();
+		for file in json["tree"].as_array().expect("wtf") {
+			file_names.push(file["path"].as_str().expect("wtf").to_string());
+		}
+
+		Ok(file_names)
 	}
 }
 
@@ -43,13 +58,17 @@ mod tests {
 		assert_eq!(tree_id, "9431e108b67d1efa9df54e6351da1951bcd9be32");
 	}
 
-	// #[test]
-	// fn can_get_tree_id() {
-	// 	let requester = TestRequestMaker::new();
-	// 	let request_maker = GitHubRequestMaker::new(requester);
+	#[test]
+	fn can_get_file_names() {
+		let requester = TestRequestMaker::new();
+		let request_maker = GitHubRequestMaker::new(requester);
 
-	// 	let latest_commit_id = request_maker.get_latest_commit_id().expect(ERROR_MESSAGE);
-	// 	let tree_id = request_maker.get_latest_commit_id().expect(ERROR_MESSAGE);
-	// 	assert_eq!(tree_id, "cd89a20adde7a608f3331e71c37bdfa087bacbf3");
-	// }
+		let tree_id = request_maker.get_tree_id().expect(ERROR_MESSAGE);
+		let file_names = request_maker.get_file_names(&tree_id).expect(ERROR_MESSAGE);
+
+		assert_eq!(
+			file_names,
+			vec!["yeet.gitignore", "yoink.gitignore", "quite.gitignore"]
+		);
+	}
 }
