@@ -1,6 +1,11 @@
 use crate::requester::{ErrorBox, Requester};
 use serde::de::DeserializeOwned;
 
+enum GitHubUrl {
+	Commits,
+	Tree,
+}
+
 pub struct TestRequestMaker;
 
 impl Requester for TestRequestMaker {
@@ -10,19 +15,9 @@ impl Requester for TestRequestMaker {
 
 	// TODO: wrapper object for json value?
 	fn get_json(&self, url: &str) -> Result<serde_json::Value, ErrorBox> {
-		if url.contains("/commits") {
-			Ok(serde_json::json!(
-				// "dank" hashed with sha1
-				[{"commit": { "tree": { "sha": "9431e108b67d1efa9df54e6351da1951bcd9be32" } }}]
-			))
-		} else {
-			Ok(serde_json::json!(
-				{ "tree": [
-					{ "path": "yeet.gitignore" },
-					{ "path": "yoink.gitignore" },
-					{ "path": "quite.gitignore" }
-				] }
-			))
+		match self.match_github_url(url) {
+			GitHubUrl::Commits => Ok(self.commits_json()),
+			GitHubUrl::Tree => Ok(self.tree_json()),
 		}
 	}
 
@@ -35,5 +30,31 @@ impl Requester for TestRequestMaker {
 impl TestRequestMaker {
 	pub fn new() -> TestRequestMaker {
 		TestRequestMaker {}
+	}
+
+	fn match_github_url(&self, url: &str) -> GitHubUrl {
+		match url {
+			"https://api.github.com/repos/github/gitignore/commits?per_page=1" => 
+				GitHubUrl::Commits,
+			"https://api.github.com/repos/github/gitignore/git/trees/9431e108b67d1efa9df54e6351da1951bcd9be32?recursive=true" => 
+				GitHubUrl::Tree,
+			_ => panic!("Unknown GitHub url"),
+		}
+	}
+
+	fn commits_json(&self) -> serde_json::Value {
+		serde_json::json!(
+			[{"commit": { "tree": { "sha": "9431e108b67d1efa9df54e6351da1951bcd9be32" } }}]
+		)
+	}
+
+	fn tree_json(&self) -> serde_json::Value {
+		serde_json::json!(
+			{ "tree": [
+				{ "path": "yeet.gitignore" },
+				{ "path": "yoink.gitignore" },
+				{ "path": "quite.gitignore" }
+			] }
+		)
 	}
 }

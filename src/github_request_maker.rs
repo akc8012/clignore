@@ -38,6 +38,7 @@ impl<T: Requester> GitHubRequestMaker<T> {
 	pub fn is_authenticated(&self) -> Result<bool, ErrorBox> {
 		let json = self
 			.request_maker
+			// TODO: GithubUrlBuilder -> Takes in parts, builds the thing
 			.get_json("https://api.github.com/rate_limit")?;
 
 		let rate_limit = json["resources"]["core"]["limit"].as_i64().expect("wtf");
