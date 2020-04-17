@@ -16,9 +16,7 @@ impl<T: Requester> GitHubRequestMaker<T> {
 
 	// TODO: Better error handling on expects here
 	pub fn get_tree_id(&self) -> Result<String, ErrorBox> {
-		let json = self
-			.request_maker
-			.get_json("https://api.github.com/repos/github/gitignore/commits?per_page=1")?;
+		let json = self.get("commits?per_page=1")?;
 
 		let sha = json[0]["commit"]["tree"]["sha"]
 			.as_str()
@@ -28,10 +26,7 @@ impl<T: Requester> GitHubRequestMaker<T> {
 	}
 
 	pub fn get_file_names(&self, tree_id: &str) -> Result<Vec<String>, ErrorBox> {
-		let json = self.request_maker.get_json(&format!(
-			"https://api.github.com/repos/github/gitignore/git/trees/{}?recursive=true",
-			tree_id
-		))?;
+		let json = self.get(&format!("git/trees/{}?recursive=true", tree_id))?;
 
 		let mut file_names = Vec::new();
 		for file in json["tree"].as_array().expect("wtf") {
@@ -39,6 +34,13 @@ impl<T: Requester> GitHubRequestMaker<T> {
 		}
 
 		Ok(file_names)
+	}
+
+	fn get(&self, path: &str) -> Result<serde_json::Value, ErrorBox> {
+		self.request_maker.get_json(&format!(
+			"https://api.github.com/repos/github/gitignore/{}",
+			path
+		))
 	}
 }
 
