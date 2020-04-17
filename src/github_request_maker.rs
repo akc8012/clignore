@@ -8,6 +8,8 @@ pub struct GitHubRequestMaker<T: Requester> {
 
 #[allow(dead_code)] // TODO: REMOVE WHEN CODE IS CALLED IN MAIN!!!!!!!!!
 impl<T: Requester> GitHubRequestMaker<T> {
+	// TODO: Warn when X-RateLimit-Limit < 5000 (not authenticated)
+
 	pub fn new(request_maker: T) -> GitHubRequestMaker<T> {
 		GitHubRequestMaker { request_maker }
 	}
@@ -17,7 +19,10 @@ impl<T: Requester> GitHubRequestMaker<T> {
 			.request_maker
 			.get_json("https://api.github.com/repos/github/gitignore/commits?per_page=1")?;
 
-		let sha = json[0]["sha"].as_str().expect("wtf").to_string();
+		let sha = json[0]["commit"]["tree"]["sha"]
+			.as_str()
+			.expect("wtf")
+			.to_string();
 		Ok(sha)
 	}
 }

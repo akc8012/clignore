@@ -11,7 +11,8 @@ impl Requester for TestRequestMaker {
 	// TODO: wrapper object for json value?
 	fn get_json(&self, _url: &str) -> Result<serde_json::Value, ErrorBox> {
 		Ok(serde_json::json!(
-			[{"sha": "9431e108b67d1efa9df54e6351da1951bcd9be32"}] // "dank" hashed with sha1
+			// "dank" hashed with sha1
+			[{"commit": { "tree": { "sha": "9431e108b67d1efa9df54e6351da1951bcd9be32" } }}]
 		))
 	}
 
