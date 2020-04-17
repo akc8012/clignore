@@ -15,7 +15,7 @@ impl Requester for TestRequestMaker {
 
 	// TODO: wrapper object for json value?
 	fn get_json(&self, url: &str) -> Result<serde_json::Value, ErrorBox> {
-		match self.match_github_url(url) {
+		match self.match_github_url(url)? {
 			GitHubUrl::Commits => Ok(self.commits_json()),
 			GitHubUrl::Tree => Ok(self.tree_json()),
 		}
@@ -32,13 +32,13 @@ impl TestRequestMaker {
 		TestRequestMaker {}
 	}
 
-	fn match_github_url(&self, url: &str) -> GitHubUrl {
+	fn match_github_url(&self, url: &str) -> Result<GitHubUrl, ErrorBox> {
 		match url {
 			"https://api.github.com/repos/github/gitignore/commits?per_page=1" => 
-				GitHubUrl::Commits,
+				Ok(GitHubUrl::Commits),
 			"https://api.github.com/repos/github/gitignore/git/trees/9431e108b67d1efa9df54e6351da1951bcd9be32?recursive=true" => 
-				GitHubUrl::Tree,
-			_ => panic!("Unknown GitHub url"),
+				Ok(GitHubUrl::Tree),
+			_ => Err(format!("Unknown GitHub url: {}", url).into())
 		}
 	}
 
