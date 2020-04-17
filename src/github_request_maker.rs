@@ -35,7 +35,6 @@ mod tests {
 		let request_maker = GitHubRequestMaker::new(requester);
 
 		let latest_commit_id = request_maker.get_latest_commit_id().expect(ERROR_MESSAGE);
-
 		assert_eq!(latest_commit_id, "9431e108b67d1efa9df54e6351da1951bcd9be32");
 	}
 }
