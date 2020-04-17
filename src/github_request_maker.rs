@@ -8,8 +8,6 @@ pub struct GitHubRequestMaker<T: Requester> {
 
 #[allow(dead_code)] // TODO: REMOVE WHEN CODE IS CALLED IN MAIN!!!!!!!!!
 impl<T: Requester> GitHubRequestMaker<T> {
-	// TODO: Warn when X-RateLimit-Limit < 5000 (not authenticated)
-
 	pub fn new(request_maker: T) -> GitHubRequestMaker<T> {
 		GitHubRequestMaker { request_maker }
 	}
@@ -36,6 +34,16 @@ impl<T: Requester> GitHubRequestMaker<T> {
 		Ok(file_names)
 	}
 
+	// use this outside of test code to warn when user isn't authenticated
+	pub fn is_authenticated(&self) -> Result<bool, ErrorBox> {
+		let json = self
+			.request_maker
+			.get_json("https://api.github.com/rate_limit")?;
+
+		let rate_limit = json["resources"]["core"]["limit"].as_i64().expect("wtf");
+		Ok(rate_limit == 5000)
+	}
+
 	fn get(&self, path: &str) -> Result<serde_json::Value, ErrorBox> {
 		self.request_maker.get_json(&format!(
 			"https://api.github.com/repos/github/gitignore/{}",
@@ -47,9 +55,21 @@ impl<T: Requester> GitHubRequestMaker<T> {
 #[cfg(test)]
 mod tests {
 	use super::*;
+	use crate::auth_token::AuthToken;
+	use crate::request_maker::RequestMaker;
 	use crate::test_request_maker::TestRequestMaker;
 
 	const ERROR_MESSAGE: &str = "Problem making the request";
+
+	#[test]
+	fn given_token_expect_authenticated() {
+		let token = AuthToken::new("token.txt");
+		let requester = RequestMaker::new(Some(token));
+		let request_maker = GitHubRequestMaker::new(requester);
+
+		let is_authenticated = request_maker.is_authenticated().expect(ERROR_MESSAGE);
+		assert!(is_authenticated);
+	}
 
 	#[test]
 	fn can_get_tree_id() {

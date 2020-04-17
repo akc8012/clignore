@@ -125,15 +125,4 @@ mod tests {
 		let response = RequestMaker::new(None).get(&url).expect(ERROR_MESSAGE);
 		assert!(response.contains("\"limit\":"), "Should receive JSON");
 	}
-
-	#[test]
-	fn get_request_with_custom_header() {
-		let url = "https://api.github.com/rate_limit";
-		let token = AuthToken::new("token.txt");
-
-		let json = RequestMaker::new(Some(token))
-			.get_json(&url)
-			.expect(ERROR_MESSAGE);
-		assert_eq!(json["resources"]["core"]["limit"], 5000); // rate_limit at 5000 when using auth header
-	}
 }
