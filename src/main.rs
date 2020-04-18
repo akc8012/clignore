@@ -2,6 +2,7 @@ use clap::App;
 
 mod auth_token;
 mod github_request_maker;
+mod github_url_builder;
 mod request_maker;
 mod requester;
 mod test_request_maker;
