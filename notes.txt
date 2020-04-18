@@ -35,3 +35,8 @@ If you want to use asynchronous methods within our program, we need the `Tokio` 
   `Tokio` is apparently an asynchronous runtime for Rust
   used in most reqwest examples
 EXCEPT: If we use the (optional) blocking module, we dont need this junk :)
+
+
+
+TODO: Set on path and run
+Make a command / script that sets latest build to path
