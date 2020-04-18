@@ -19,6 +19,11 @@ impl GitHubUrlBuilder {
 		self
 	}
 
+	pub fn with_query(mut self, name: &str, value: i32) -> GitHubUrlBuilder {
+		self.url.push_str(&format!("?{}={}", name, value));
+		self
+	}
+
 	pub fn build(&self) -> String {
 		self.url.clone()
 	}
@@ -31,13 +36,29 @@ mod tests {
 	#[test]
 	fn can_build_rate_limit_url() {
 		let url = GitHubUrlBuilder::new().with_path("rate_limit").build();
-		assert_eq!(url, "https://api.github.com/rate_limit");
+		let expected = "https://api.github.com/rate_limit";
+
+		assert_eq!(url, expected);
 	}
 
 	#[test]
 	fn can_build_repo_url() {
 		let url = GitHubUrlBuilder::new().with_repo().build();
-		assert_eq!(url, "https://api.github.com/repos/github/gitignore");
+		let expected = "https://api.github.com/repos/github/gitignore";
+
+		assert_eq!(url, expected);
+	}
+
+	#[test]
+	fn can_build_query_string_url() {
+		let url = GitHubUrlBuilder::new()
+			.with_repo()
+			.with_path("commits")
+			.with_query("per_page", 1)
+			.build();
+
+		let expected = "https://api.github.com/repos/github/gitignore/commits?per_page=1";
+		assert_eq!(url, expected);
 	}
 
 	// https://api.github.com/rate_limit
