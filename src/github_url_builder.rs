@@ -10,6 +10,10 @@ impl GitHubUrlBuilder {
 		}
 	}
 
+	pub fn with_repo(self) -> GitHubUrlBuilder {
+		self.with_path("repos/github/gitignore")
+	}
+
 	pub fn with_path(mut self, path: &str) -> GitHubUrlBuilder {
 		self.url.push_str(&format!("/{}", path));
 		self
@@ -28,6 +32,12 @@ mod tests {
 	fn can_build_rate_limit_url() {
 		let url = GitHubUrlBuilder::new().with_path("rate_limit").build();
 		assert_eq!(url, "https://api.github.com/rate_limit");
+	}
+
+	#[test]
+	fn can_build_repo_url() {
+		let url = GitHubUrlBuilder::new().with_repo().build();
+		assert_eq!(url, "https://api.github.com/repos/github/gitignore");
 	}
 
 	// https://api.github.com/rate_limit
