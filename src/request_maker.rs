@@ -26,7 +26,6 @@ impl Requester for RequestMaker {
 	}
 }
 
-#[allow(dead_code)] // TODO: REMOVE WHEN CODE IS CALLED IN MAIN!!!!!!!!!
 impl RequestMaker {
 	pub fn new(token: Option<AuthToken>) -> RequestMaker {
 		RequestMaker { token }

@@ -26,7 +26,7 @@ impl Requester for TestRequestMaker {
 	}
 }
 
-#[allow(dead_code)] // TODO: REMOVE WHEN CODE IS CALLED IN MAIN!!!!!!!!!
+#[allow(dead_code)]
 impl TestRequestMaker {
 	pub fn new() -> TestRequestMaker {
 		TestRequestMaker {}

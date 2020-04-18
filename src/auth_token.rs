@@ -5,7 +5,6 @@ pub struct AuthToken {
 	token: String,
 }
 
-#[allow(dead_code)] // TODO: REMOVE WHEN CODE IS CALLED IN MAIN!!!!!!!!!
 impl AuthToken {
 	pub fn new(path: &str) -> AuthToken {
 		let token = Self::read_token_from_file(path)

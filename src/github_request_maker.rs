@@ -7,7 +7,6 @@ pub struct GitHubRequestMaker<T: Requester> {
 	request_maker: T,
 }
 
-#[allow(dead_code)] // TODO: REMOVE WHEN CODE IS CALLED IN MAIN!!!!!!!!!
 impl<T: Requester> GitHubRequestMaker<T> {
 	pub fn new(request_maker: T) -> GitHubRequestMaker<T> {
 		GitHubRequestMaker { request_maker }
@@ -46,6 +45,7 @@ impl<T: Requester> GitHubRequestMaker<T> {
 	}
 
 	// use this outside of test code to warn when user isn't authenticated
+	#[allow(dead_code)] // TODO: REMOVE WHEN CODE IS CALLED IN MAIN!!!!!!!!!
 	pub fn is_authenticated(&self) -> Result<bool, ErrorBox> {
 		let json = self.get(GitHubUrlBuilder::new().with_path("rate_limit"))?;
 

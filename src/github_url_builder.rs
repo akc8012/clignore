@@ -2,7 +2,6 @@ pub struct GitHubUrlBuilder {
 	url: String,
 }
 
-#[allow(dead_code)] // TODO: REMOVE WHEN CODE IS CALLED IN MAIN!!!!!!!!!
 impl GitHubUrlBuilder {
 	pub fn new() -> GitHubUrlBuilder {
 		GitHubUrlBuilder {
