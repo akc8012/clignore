@@ -36,7 +36,10 @@ If you want to use asynchronous methods within our program, we need the `Tokio` 
   used in most reqwest examples
 EXCEPT: If we use the (optional) blocking module, we dont need this junk :)
 
+TODO: fix the unwraps and expects :(
 
 
-TODO: Set on path and run
-Make a command / script that sets latest build to path
+App fails when token is not in scope of working directory
+
+
+

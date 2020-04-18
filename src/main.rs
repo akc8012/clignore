@@ -1,5 +1,5 @@
 use auth_token::AuthToken;
-use clap::{App, Arg};
+use clap::{App, SubCommand};
 use github_request_maker::GitHubRequestMaker;
 use request_maker::RequestMaker;
 
@@ -14,12 +14,7 @@ fn main() {
 		.version("0.1.0")
 		.about("Finds .gitignore template files")
 		.author("Andrew Colannino")
-		.arg(
-			Arg::with_name("list")
-				.short("l")
-				.long("list")
-				.help("List all gitignore template files"),
-		)
+		.subcommand(SubCommand::with_name("list").about("Lists all gitignore template files"))
 		.get_matches();
 
 	if matches.is_present("list") {
@@ -28,7 +23,7 @@ fn main() {
 }
 
 fn list_files() {
-	let token = AuthToken::new("token.txt");
+	let token = AuthToken::new("token.txt"); // maybe return Result, Err when file not found (make it optional, warn when not found)
 	let requester = RequestMaker::new(Some(token));
 	let request_maker = GitHubRequestMaker::new(requester);
 
