@@ -13,6 +13,7 @@ impl Requester for TestRequestMaker {
 		panic!("I have no definition and I must scream");
 	}
 
+	// TODO: wrapper object for json value?
 	fn get_json(&self, url: &str) -> Result<serde_json::Value, ErrorBox> {
 		match self.match_github_url(url)? {
 			GitHubUrl::Commits => Ok(self.commits_json()),
