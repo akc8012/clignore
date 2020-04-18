@@ -19,13 +19,13 @@ impl GitHubUrlBuilder {
 		self
 	}
 
-	pub fn with_query(mut self, name: &str, value: i32) -> GitHubUrlBuilder {
+	pub fn with_query<T: std::fmt::Display>(mut self, name: &str, value: T) -> GitHubUrlBuilder {
 		self.url.push_str(&format!("?{}={}", name, value));
 		self
 	}
 
-	pub fn build(&self) -> String {
-		self.url.clone()
+	pub fn build(self) -> String {
+		self.url
 	}
 }
 
@@ -61,7 +61,16 @@ mod tests {
 		assert_eq!(url, expected);
 	}
 
-	// https://api.github.com/rate_limit
-	// https://api.github.com/repos/github/gitignore/commits?per_page=1
-	// https://api.github.com/repos/github/gitignore/git/trees/{tree_sha}?recursive=true
+	#[test]
+	fn can_build_tree_url() {
+		let url = GitHubUrlBuilder::new()
+			.with_repo()
+			.with_path("git/trees/abcdefg")
+			.with_query("recursive", true)
+			.build();
+
+		let expected =
+			"https://api.github.com/repos/github/gitignore/git/trees/abcdefg?recursive=true";
+		assert_eq!(url, expected);
+	}
 }
