@@ -1,4 +1,4 @@
-struct GitHubUrlBuilder {
+pub struct GitHubUrlBuilder {
 	url: String,
 }
 
