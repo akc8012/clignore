@@ -48,7 +48,7 @@ fn list_files() {
 
 fn find_files(query: &str) {
 	let file_names = get_file_names();
-	let results = FileFinder::find(file_names, query);
+	let results = FileFinder::find(&file_names, query);
 
 	if results.len() > 0 {
 		for result in results {
