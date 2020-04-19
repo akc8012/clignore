@@ -1,5 +1,5 @@
 use crate::github_url_builder::GitHubUrlBuilder;
-use crate::requester::{ErrorBox, Requester};
+use crate::{error_box::ErrorBox, requester::Requester};
 
 pub struct GitHubRequestMaker<T: Requester> {
 	request_maker: T,

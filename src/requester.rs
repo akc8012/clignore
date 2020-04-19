@@ -1,6 +1,5 @@
+use crate::error_box::ErrorBox;
 use serde::de::DeserializeOwned;
-
-pub type ErrorBox = Box<dyn std::error::Error>;
 
 pub trait Requester {
 	fn get(&self, url: &str) -> Result<String, ErrorBox>;

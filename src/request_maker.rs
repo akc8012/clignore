@@ -1,5 +1,5 @@
 use crate::auth_token::AuthToken;
-use crate::requester::{ErrorBox, Requester};
+use crate::{error_box::ErrorBox, requester::Requester};
 
 use reqwest::{blocking, header};
 use serde::de::DeserializeOwned;

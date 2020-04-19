@@ -1,4 +1,4 @@
-use crate::requester::{ErrorBox, Requester};
+use crate::{error_box::ErrorBox, requester::Requester};
 use serde::de::DeserializeOwned;
 
 enum GitHubUrl {
