@@ -59,7 +59,10 @@ impl RequestMaker {
 		if let Some(token) = &self.token {
 			headers.insert(
 				header::AUTHORIZATION,
-				header::HeaderValue::from_str(&token.to_string()).expect("wtf"),
+				header::HeaderValue::from_str(&token.to_string()).expect(
+					// TODO: Do this logic within AuthToken
+					"Could not parse token value. Make sure it doesn't contain invalid characters.",
+				),
 			);
 		}
 		headers
