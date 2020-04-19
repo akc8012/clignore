@@ -1,6 +1,6 @@
 use crate::github_url_builder::GitHubUrlBuilder;
 use crate::{error_box::ErrorBox, requester::Requester};
-use base64::decode;
+use base64;
 
 pub struct GitHubRequestMaker<T: Requester> {
 	request_maker: T,
@@ -38,7 +38,9 @@ impl<T: Requester> GitHubRequestMaker<T> {
 		)?;
 
 		let encoded_file = json["content"].as_str().expect("wtf");
-		let file = &decode(encoded_file).unwrap();
+		let encoded_file = encoded_file.replace("\n", "");
+
+		let file = &base64::decode(encoded_file).unwrap();
 		Ok(std::str::from_utf8(file).unwrap().to_string())
 	}
 
