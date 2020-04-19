@@ -1,0 +1,24 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "(Windows) Launch",
+			"type": "cppvsdbg",
+			"request": "launch",
+			"program": "${workspaceRoot}/target/debug/ignore_cli.exe",
+			"args": [],
+			"stopAtEntry": false,
+			"cwd": "${workspaceRoot}",
+			"environment": [],
+			"externalConsole": true
+		},
+		{
+			"name": "(Linux / OS X) Launch",
+			"type": "lldb",
+			"request": "launch",
+			"program": "${workspaceRoot}/target/debug/ignore_cli",
+			"args": [],
+			"cwd": "${workspaceRoot}",
+		}
+	]
+}

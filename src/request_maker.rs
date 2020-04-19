@@ -50,7 +50,7 @@ impl RequestMaker {
 			.user_agent(user_agent)
 			.default_headers(self.get_headers())
 			.build()
-			.expect("Can't create client")
+			.unwrap()
 	}
 
 	fn get_headers(&self) -> header::HeaderMap {
