@@ -35,6 +35,7 @@ fn main() {
 		list_files();
 	}
 
+	// TODO: Quit unwrapping in here, actually handle the errors (print output?)
 	if let Some(matches) = matches.subcommand_matches("find") {
 		find_files(matches.value_of("input").unwrap());
 	}

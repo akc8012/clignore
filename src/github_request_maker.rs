@@ -64,15 +64,13 @@ mod tests {
 	use crate::request_maker::RequestMaker;
 	use crate::test_request_maker::TestRequestMaker;
 
-	const ERROR_MESSAGE: &str = "Problem making the request";
-
 	#[test]
 	fn given_token_expect_authenticated() {
 		let token = AuthToken::new("token.txt");
 		let requester = RequestMaker::new(Some(token));
 		let request_maker = GitHubRequestMaker::new(requester);
 
-		let is_authenticated = request_maker.is_authenticated().expect(ERROR_MESSAGE);
+		let is_authenticated = request_maker.is_authenticated().unwrap();
 		assert!(is_authenticated);
 	}
 
@@ -80,14 +78,14 @@ mod tests {
 	fn can_get_tree_id() {
 		let request_maker = GitHubRequestMaker::new(TestRequestMaker::new());
 
-		let tree_id = request_maker.get_tree_id().expect(ERROR_MESSAGE);
+		let tree_id = request_maker.get_tree_id().unwrap();
 		assert_eq!(tree_id, "9431e108b67d1efa9df54e6351da1951bcd9be32");
 	}
 
 	#[test]
 	fn can_get_file_names() {
 		let request_maker = GitHubRequestMaker::new(TestRequestMaker::new());
-		let file_names = request_maker.get_file_names().expect(ERROR_MESSAGE);
+		let file_names = request_maker.get_file_names().unwrap();
 
 		assert_eq!(
 			file_names,

@@ -71,7 +71,6 @@ mod tests {
 	use super::*;
 
 	const TODO_URL: &str = "https://jsonplaceholder.typicode.com/todos/1";
-	const ERROR_MESSAGE: &str = "Problem making the request";
 
 	#[derive(serde::Deserialize, Debug)]
 	#[allow(non_snake_case)]
@@ -84,7 +83,7 @@ mod tests {
 
 	#[test]
 	fn given_request_expect_response() {
-		let response = RequestMaker::new(None).get(TODO_URL).expect(ERROR_MESSAGE);
+		let response = RequestMaker::new(None).get(TODO_URL).unwrap();
 		assert!(response.contains("\"id\": 1"), "Should receive JSON");
 	}
 
@@ -99,9 +98,7 @@ mod tests {
 
 	#[test]
 	fn get_json_request_value() {
-		let json = RequestMaker::new(None)
-			.get_json(TODO_URL)
-			.expect(ERROR_MESSAGE);
+		let json = RequestMaker::new(None).get_json(TODO_URL).unwrap();
 
 		assert_eq!(json["id"], 1);
 		assert_eq!(json["completed"], false);
@@ -111,7 +108,7 @@ mod tests {
 	fn get_deserialized_json_request_value() {
 		let todo: TodoItem = RequestMaker::new(None)
 			.get_json_deserialized(TODO_URL)
-			.expect(ERROR_MESSAGE);
+			.unwrap();
 
 		assert_eq!(todo.id, 1);
 		assert_eq!(todo.completed, false);
@@ -121,7 +118,7 @@ mod tests {
 	fn get_request_that_requires_user_agent() {
 		let url = "https://api.github.com/rate_limit"; // rate_limit doesn't incur API hit
 
-		let response = RequestMaker::new(None).get(&url).expect(ERROR_MESSAGE);
+		let response = RequestMaker::new(None).get(&url).unwrap();
 		assert!(response.contains("\"limit\":"), "Should receive JSON");
 	}
 }
