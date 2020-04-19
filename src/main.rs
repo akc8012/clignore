@@ -4,6 +4,7 @@ use github_request_maker::GitHubRequestMaker;
 use request_maker::RequestMaker;
 
 mod auth_token;
+mod file_finder;
 mod github_request_maker;
 mod github_url_builder;
 mod request_maker;
@@ -29,7 +30,6 @@ fn list_files() {
 	let request_maker = GitHubRequestMaker::new(requester);
 
 	let file_names = request_maker.get_file_names().unwrap();
-
 	for file_name in file_names {
 		println!("{}", file_name);
 	}
