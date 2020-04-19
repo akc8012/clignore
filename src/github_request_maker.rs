@@ -1,7 +1,5 @@
 use crate::github_url_builder::GitHubUrlBuilder;
-use crate::requester::Requester;
-
-type ErrorBox = Box<dyn std::error::Error>;
+use crate::requester::{ErrorBox, Requester};
 
 pub struct GitHubRequestMaker<T: Requester> {
 	request_maker: T,
