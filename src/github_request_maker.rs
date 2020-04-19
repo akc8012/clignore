@@ -13,7 +13,24 @@ impl<T: Requester> GitHubRequestMaker<T> {
 	}
 
 	// TODO: Better error handling on expects here
-	pub fn get_tree_id(&self) -> Result<String, ErrorBox> {
+	pub fn get_file_names(&self) -> Result<Vec<String>, ErrorBox> {
+		let tree_id = self.get_tree_id()?;
+		let json = self.get(
+			GitHubUrlBuilder::new()
+				.with_repo()
+				.with_path(&format!("git/trees/{}", &tree_id))
+				.with_query("recursive", true),
+		)?;
+
+		let mut file_names = Vec::new();
+		for file in json["tree"].as_array().expect("wtf") {
+			file_names.push(file["path"].as_str().expect("wtf").to_string());
+		}
+
+		Ok(file_names)
+	}
+
+	fn get_tree_id(&self) -> Result<String, ErrorBox> {
 		let json = self.get(
 			GitHubUrlBuilder::new()
 				.with_repo()
@@ -26,22 +43,6 @@ impl<T: Requester> GitHubRequestMaker<T> {
 			.expect("wtf")
 			.to_string();
 		Ok(sha)
-	}
-
-	pub fn get_file_names(&self, tree_id: &str) -> Result<Vec<String>, ErrorBox> {
-		let json = self.get(
-			GitHubUrlBuilder::new()
-				.with_repo()
-				.with_path(&format!("git/trees/{}", tree_id))
-				.with_query("recursive", true),
-		)?;
-
-		let mut file_names = Vec::new();
-		for file in json["tree"].as_array().expect("wtf") {
-			file_names.push(file["path"].as_str().expect("wtf").to_string());
-		}
-
-		Ok(file_names)
 	}
 
 	// use this outside of test code to warn when user isn't authenticated
@@ -79,8 +80,7 @@ mod tests {
 
 	#[test]
 	fn can_get_tree_id() {
-		let requester = TestRequestMaker::new();
-		let request_maker = GitHubRequestMaker::new(requester);
+		let request_maker = GitHubRequestMaker::new(TestRequestMaker::new());
 
 		let tree_id = request_maker.get_tree_id().expect(ERROR_MESSAGE);
 		assert_eq!(tree_id, "9431e108b67d1efa9df54e6351da1951bcd9be32");
@@ -88,11 +88,8 @@ mod tests {
 
 	#[test]
 	fn can_get_file_names() {
-		let requester = TestRequestMaker::new();
-		let request_maker = GitHubRequestMaker::new(requester);
-
-		let tree_id = request_maker.get_tree_id().expect(ERROR_MESSAGE);
-		let file_names = request_maker.get_file_names(&tree_id).expect(ERROR_MESSAGE);
+		let request_maker = GitHubRequestMaker::new(TestRequestMaker::new());
+		let file_names = request_maker.get_file_names().expect(ERROR_MESSAGE);
 
 		assert_eq!(
 			file_names,

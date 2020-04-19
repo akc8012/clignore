@@ -28,9 +28,7 @@ fn list_files() {
 	let requester = RequestMaker::new(Some(token));
 	let request_maker = GitHubRequestMaker::new(requester);
 
-	let file_names = request_maker
-		.get_file_names(&request_maker.get_tree_id().unwrap())
-		.unwrap();
+	let file_names = request_maker.get_file_names().unwrap();
 
 	for file_name in file_names {
 		println!("{}", file_name);
