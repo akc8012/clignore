@@ -1,3 +1,4 @@
+use crate::error_box::ErrorBox;
 use std::fs::File;
 use std::io::Read;
 
@@ -14,7 +15,7 @@ impl AuthToken {
 		AuthToken { token }
 	}
 
-	fn read_token_from_file(path: &str) -> Result<String, Box<dyn std::error::Error>> {
+	fn read_token_from_file(path: &str) -> Result<String, ErrorBox> {
 		let mut token = String::new();
 		File::open(path)?.read_to_string(&mut token)?;
 
