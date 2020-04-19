@@ -40,8 +40,8 @@ impl<T: Requester> GitHubRequestMaker<T> {
 		let encoded_file = json["content"].as_str().expect("wtf");
 		let encoded_file = encoded_file.replace("\n", "");
 
-		let file = &base64::decode(encoded_file).unwrap();
-		Ok(std::str::from_utf8(file).unwrap().to_string())
+		let file = &base64::decode(encoded_file)?;
+		Ok(std::str::from_utf8(file)?.to_string())
 	}
 
 	fn get_tree_id(&self) -> Result<String, ErrorBox> {
