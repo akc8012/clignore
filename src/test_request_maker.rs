@@ -4,6 +4,7 @@ use serde::de::DeserializeOwned;
 enum GitHubUrl {
 	Commits,
 	Tree,
+	File,
 }
 
 pub struct TestRequestMaker;
@@ -17,6 +18,7 @@ impl Requester for TestRequestMaker {
 		match self.match_github_url(url)? {
 			GitHubUrl::Commits => Ok(self.commits_json()),
 			GitHubUrl::Tree => Ok(self.tree_json()),
+			GitHubUrl::File => Ok(self.file_json()),
 		}
 	}
 
@@ -38,6 +40,8 @@ impl TestRequestMaker {
 				Ok(GitHubUrl::Commits),
 			"https://api.github.com/repos/github/gitignore/git/trees/9431e108b67d1efa9df54e6351da1951bcd9be32?recursive=true" => 
 				Ok(GitHubUrl::Tree),
+			"https://api.github.com/repos/github/gitignore/contents/dank.gitignore" =>
+				Ok(GitHubUrl::File),
 			_ => Err(format!("Unknown GitHub url: {}", url).into())
 		}
 	}
@@ -55,6 +59,12 @@ impl TestRequestMaker {
 				{ "path": "yoink.gitignore" },
 				{ "path": "quite.gitignore" }
 			] }
+		)
+	}
+
+	fn file_json(&self) -> serde_json::Value {
+		serde_json::json!(
+			{ "content": "LmlkZWE=" }
 		)
 	}
 }

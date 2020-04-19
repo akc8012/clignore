@@ -1,5 +1,6 @@
 use crate::github_url_builder::GitHubUrlBuilder;
 use crate::{error_box::ErrorBox, requester::Requester};
+use base64::decode;
 
 pub struct GitHubRequestMaker<T: Requester> {
 	request_maker: T,
@@ -28,6 +29,19 @@ impl<T: Requester> GitHubRequestMaker<T> {
 		Ok(file_names)
 	}
 
+	#[allow(dead_code)]
+	pub fn get_file(&self, path: &str) -> Result<String, ErrorBox> {
+		let json = self.get(
+			GitHubUrlBuilder::new()
+				.with_repo()
+				.with_path(&format!("contents/{}", path)),
+		)?;
+
+		let encoded_file = json["content"].as_str().expect("wtf");
+		let file = &decode(encoded_file).unwrap();
+		Ok(std::str::from_utf8(file).unwrap().to_string())
+	}
+
 	fn get_tree_id(&self) -> Result<String, ErrorBox> {
 		let json = self.get(
 			GitHubUrlBuilder::new()
@@ -36,11 +50,8 @@ impl<T: Requester> GitHubRequestMaker<T> {
 				.with_query("per_page", 1),
 		)?;
 
-		let sha = json[0]["commit"]["tree"]["sha"]
-			.as_str()
-			.expect("wtf")
-			.to_string();
-		Ok(sha)
+		let sha = json[0]["commit"]["tree"]["sha"].as_str().expect("wtf");
+		Ok(sha.to_string())
 	}
 
 	// TODO: Warn when we get too close to rate limit
@@ -91,5 +102,13 @@ mod tests {
 			file_names,
 			vec!["yeet.gitignore", "yoink.gitignore", "quite.gitignore"]
 		);
+	}
+
+	#[test]
+	fn can_download_file() {
+		let request_maker = GitHubRequestMaker::new(TestRequestMaker::new());
+		let file = request_maker.get_file("dank.gitignore").unwrap();
+
+		assert_eq!(file, ".idea");
 	}
 }
