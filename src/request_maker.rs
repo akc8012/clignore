@@ -71,7 +71,7 @@ mod tests {
 	use super::*;
 
 	const TODO_URL: &str = "https://jsonplaceholder.typicode.com/todos/1";
-	const ERROR_MESSAGE: &str = "Problem making the request"; // TODO: Make pub?
+	const ERROR_MESSAGE: &str = "Problem making the request";
 
 	#[derive(serde::Deserialize, Debug)]
 	#[allow(non_snake_case)]

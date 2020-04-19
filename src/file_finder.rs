@@ -1,6 +1,5 @@
 pub struct FileFinder;
 
-#[allow(dead_code)] // TODO: REMOVE ME WHEN I GET USED
 impl FileFinder {
 	pub fn find<'s>(file_names: &'s [String], query: &str) -> Vec<&'s String> {
 		let mut indices = Vec::new();
