@@ -43,8 +43,8 @@ impl<T: Requester> GitHubRequestMaker<T> {
 		Ok(sha)
 	}
 
-	// use this outside of test code to warn when user isn't authenticated
-	#[allow(dead_code)] // TODO: REMOVE WHEN CODE IS CALLED IN MAIN!!!!!!!!!
+	// TODO: Warn when we get too close to rate limit
+	#[allow(dead_code)]
 	pub fn is_authenticated(&self) -> Result<bool, ErrorBox> {
 		let json = self.get(GitHubUrlBuilder::new().with_path("rate_limit"))?;
 

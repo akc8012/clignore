@@ -6,6 +6,7 @@ pub struct AuthToken {
 }
 
 impl AuthToken {
+	// TODO: return Result, Err when file not found
 	pub fn new(path: &str) -> AuthToken {
 		let token = Self::read_token_from_file(path)
 			.unwrap_or_else(|_| panic!("Could not find token file at path: {}", path));

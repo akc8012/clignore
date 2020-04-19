@@ -60,7 +60,7 @@ fn find_files(query: &str) {
 }
 
 fn get_file_names() -> Vec<String> {
-	let token = AuthToken::new("token.txt"); // maybe return Result, Err when file not found (make it optional, warn with num of requests left when not found)
+	let token = AuthToken::new("token.txt");
 	let requester = RequestMaker::new(Some(token));
 	let request_maker = GitHubRequestMaker::new(requester);
 
