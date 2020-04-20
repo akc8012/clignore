@@ -1,4 +1,5 @@
 use auth_token::AuthToken;
+use error_box::ErrorBox;
 use file_finder::FileFinder;
 use file_maker::FileMaker;
 use github_request_maker::GitHubRequestMaker;
@@ -31,18 +32,20 @@ impl Controller {
 		GitHubRequestMaker::new(requester)
 	}
 
-	pub fn list_files(&self) {
-		for file_name in &self.get_file_names() {
+	pub fn list_files(&self) -> Result<(), ErrorBox> {
+		for file_name in &self.get_file_names()? {
 			println!("{}", file_name);
 		}
+
+		Ok(())
 	}
 
-	pub fn find_files(&self, query: &str) {
-		let file_names = self.get_file_names();
+	pub fn find_files(&self, query: &str) -> Result<(), ErrorBox> {
+		let file_names = self.get_file_names()?;
 		let results = FileFinder::find(&file_names, query);
 
 		if results.len() == 1 {
-			self.download_exact_match(results[0]);
+			self.download_exact_match(results[0])?;
 		} else if results.len() > 0 {
 			for file_name in results {
 				println!("{}", file_name);
@@ -50,18 +53,21 @@ impl Controller {
 		} else {
 			println!("No matches found for '{}'", query);
 		}
+
+		Ok(())
 	}
 
-	fn get_file_names(&self) -> Vec<String> {
-		self.request_maker.get_file_names().unwrap()
+	fn get_file_names(&self) -> Result<Vec<String>, ErrorBox> {
+		self.request_maker.get_file_names()
 	}
 
-	fn download_exact_match(&self, file_name: &str) {
+	fn download_exact_match(&self, file_name: &str) -> Result<(), ErrorBox> {
 		println!("Found exact match '{}'\nDownloading...", file_name);
 
-		let content = self.request_maker.get_file(file_name).unwrap();
-		FileMaker::make_file(".gitignore", &content).unwrap();
+		let content = self.request_maker.get_file(file_name)?;
+		FileMaker::make_file(".gitignore", &content)?;
 
 		println!("Downloaded '{}'", file_name);
+		Ok(())
 	}
 }

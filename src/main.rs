@@ -22,11 +22,11 @@ fn main() {
 	let controller = Controller::new();
 
 	if matches.is_present("list") {
-		controller.list_files();
+		// TODO: Quit unwrapping in here, actually handle the errors (print output?)
+		controller.list_files().unwrap();
 	}
 
-	// TODO: Quit unwrapping in here, actually handle the errors (print output?)
 	if let Some(matches) = matches.subcommand_matches("find") {
-		controller.find_files(matches.value_of("input").unwrap())
+		controller.find_files(matches.value_of("input").unwrap()).unwrap();
 	}
 }
