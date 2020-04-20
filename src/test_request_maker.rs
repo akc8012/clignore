@@ -27,7 +27,7 @@ impl Requester for TestRequestMaker {
 	}
 }
 
-#[allow(dead_code)]
+#[allow(dead_code)] // TODO: Mark just for tests?
 impl TestRequestMaker {
 	pub fn new() -> TestRequestMaker {
 		TestRequestMaker {}
