@@ -7,6 +7,7 @@ use request_maker::RequestMaker;
 mod auth_token;
 mod error_box;
 mod file_finder;
+mod file_maker;
 mod github_request_maker;
 mod github_url_builder;
 mod request_maker;
