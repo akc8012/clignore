@@ -1,6 +1,7 @@
 use auth_token::AuthToken;
 use clap::{App, Arg, SubCommand};
 use file_finder::FileFinder;
+use file_maker::FileMaker;
 use github_request_maker::GitHubRequestMaker;
 use request_maker::RequestMaker;
 
@@ -53,7 +54,15 @@ fn find_files(query: &str) {
 	let file_names = get_file_names();
 	let results = FileFinder::find(&file_names, query);
 
-	if results.len() > 0 {
+	if results.len() == 1 {
+		let file_name = results[0];
+		println!("Found exact match '{}'\nDownloading...", file_name);
+
+		let content = get_request_maker().get_file(file_name).unwrap();
+		FileMaker::make_file(".gitignore", &content).unwrap();
+
+		println!("Downloaded '{}'", file_name);
+	} else if results.len() > 0 {
 		for result in results {
 			println!("{}", result);
 		}
@@ -63,9 +72,12 @@ fn find_files(query: &str) {
 }
 
 fn get_file_names() -> Vec<String> {
+	let request_maker = get_request_maker();
+	request_maker.get_file_names().unwrap()
+}
+
+fn get_request_maker() -> GitHubRequestMaker<RequestMaker> {
 	let token = AuthToken::new("token.txt");
 	let requester = RequestMaker::new(Some(token));
-	let request_maker = GitHubRequestMaker::new(requester);
-
-	request_maker.get_file_names().unwrap()
+	GitHubRequestMaker::new(requester)
 }

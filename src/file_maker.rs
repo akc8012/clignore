@@ -1,8 +1,7 @@
 use std::{fs, io};
 
-struct FileMaker;
+pub struct FileMaker;
 
-#[allow(dead_code)] // TODO: yeet me into the sun
 impl FileMaker {
 	pub fn make_file(name: &str, content: &str) -> io::Result<()> {
 		fs::write(name, content)

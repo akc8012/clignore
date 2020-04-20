@@ -42,4 +42,5 @@ TODO:
   Fix the unwraps and expects :(
   App fails when token is not in scope of working directory
 
-
+  Come up with a nice way to order result, then prompt the user for the number of file
+  Might be showing filenames for paths? Write a test for this.
