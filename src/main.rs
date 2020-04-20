@@ -33,51 +33,65 @@ fn main() {
 		)
 		.get_matches();
 
+	let controller = Controller::new();
+
 	if matches.is_present("list") {
-		list_files();
+		controller.list_files();
 	}
 
 	// TODO: Quit unwrapping in here, actually handle the errors (print output?)
 	if let Some(matches) = matches.subcommand_matches("find") {
-		find_files(matches.value_of("input").unwrap());
+		controller.find_files(matches.value_of("input").unwrap())
 	}
 }
 
-fn list_files() {
-	let file_names = get_file_names();
-	for file_name in file_names {
-		println!("{}", file_name);
-	}
+struct Controller {
+	request_maker: GitHubRequestMaker<RequestMaker>,
 }
 
-fn find_files(query: &str) {
-	let file_names = get_file_names();
-	let results = FileFinder::find(&file_names, query);
+impl Controller {
+	pub fn new() -> Controller {
+		let request_maker = Self::create_request_maker();
+		Controller { request_maker }
+	}
 
-	if results.len() == 1 {
-		let file_name = results[0];
+	fn create_request_maker() -> GitHubRequestMaker<RequestMaker> {
+		let token = AuthToken::new("token.txt");
+		let requester = RequestMaker::new(Some(token));
+		GitHubRequestMaker::new(requester)
+	}
+
+	pub fn list_files(&self) {
+		for file_name in &self.get_file_names() {
+			println!("{}", file_name);
+		}
+	}
+
+	pub fn find_files(&self, query: &str) {
+		let file_names = self.get_file_names();
+		let results = FileFinder::find(&file_names, query);
+
+		if results.len() == 1 {
+			self.download_exact_match(results[0]);
+		} else if results.len() > 0 {
+			for file_name in results {
+				println!("{}", file_name);
+			}
+		} else {
+			println!("No matches found for '{}'", query);
+		}
+	}
+
+	fn get_file_names(&self) -> Vec<String> {
+		self.request_maker.get_file_names().unwrap()
+	}
+
+	fn download_exact_match(&self, file_name: &str) {
 		println!("Found exact match '{}'\nDownloading...", file_name);
 
-		let content = get_request_maker().get_file(file_name).unwrap();
+		let content = self.request_maker.get_file(file_name).unwrap();
 		FileMaker::make_file(".gitignore", &content).unwrap();
 
 		println!("Downloaded '{}'", file_name);
-	} else if results.len() > 0 {
-		for result in results {
-			println!("{}", result);
-		}
-	} else {
-		println!("No matches found for '{}'", query);
 	}
-}
-
-fn get_file_names() -> Vec<String> {
-	let request_maker = get_request_maker();
-	request_maker.get_file_names().unwrap()
-}
-
-fn get_request_maker() -> GitHubRequestMaker<RequestMaker> {
-	let token = AuthToken::new("token.txt");
-	let requester = RequestMaker::new(Some(token));
-	GitHubRequestMaker::new(requester)
 }
