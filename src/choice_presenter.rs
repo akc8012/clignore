@@ -1,9 +1,9 @@
-struct ChoicePresenter<'o> {
+pub struct ChoicePresenter<'o> {
 	choices: &'o [String],
 }
 
 #[derive(Debug, PartialEq)]
-enum ChoiceResult<'o> {
+pub enum ChoiceResult<'o> {
 	Some(&'o str),
 	Invalid(usize),
 	None,
@@ -33,6 +33,10 @@ impl<'o> ChoicePresenter<'o> {
 			o if o > self.choices.len() => ChoiceResult::Invalid(o),
 			_ => ChoiceResult::Some(&self.choices[choice - 1]),
 		}
+	}
+
+	pub fn len(&self) -> usize {
+		self.choices.len()
 	}
 }
 

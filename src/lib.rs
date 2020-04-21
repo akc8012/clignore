@@ -1,4 +1,5 @@
 use auth_token::AuthToken;
+use choice_presenter::ChoicePresenter;
 use error_box::ErrorBox;
 use file_finder::FileFinder;
 use file_maker::FileMaker;
@@ -6,12 +7,12 @@ use github_request_maker::GitHubRequestMaker;
 use request_maker::RequestMaker;
 
 mod auth_token;
+mod choice_presenter;
 mod error_box;
 mod file_finder;
 mod file_maker;
 mod github_request_maker;
 mod github_url_builder;
-mod choice_presenter;
 mod request_maker;
 mod requester;
 mod test_request_maker;
@@ -49,9 +50,9 @@ impl Controller {
 		if results.len() == 1 {
 			self.download_exact_match(results[0])?;
 		} else if !results.is_empty() {
-			for file_name in results {
-				println!("{}", file_name);
-			}
+			// TODO: Fix string Vec cloning
+			let results: Vec<String> = results.iter().map(|s| s.to_string()).collect();
+			self.handle_multiple_matches(query, &results);
 		} else {
 			println!("No matches found for '{}'", query);
 		}
@@ -71,5 +72,17 @@ impl Controller {
 
 		println!("Downloaded '{}'", file_name);
 		Ok(())
+	}
+
+	fn handle_multiple_matches(&self, query: &str, results: &[String]) {
+		println!("Several matches found for '{}':\n", query);
+
+		let choice_presenter = ChoicePresenter::new(results);
+		println!("{}\n", choice_presenter.present_choices());
+
+		println!(
+			"Which do you want to use (0 to abort)? [0-{}]:",
+			choice_presenter.len()
+		);
 	}
 }
