@@ -29,10 +29,11 @@ impl<'o> OptionPresenter<'o> {
 	}
 
 	pub fn select_option(&self, option: usize) -> OptionResult {
-		if option == 0 {
-			return OptionResult::None;
+		match option {
+			0 => OptionResult::None,
+			o if o > self.options.len() => OptionResult::Invalid(o),
+			_ => OptionResult::Some(&self.options[option - 1]),
 		}
-		OptionResult::Some(&self.options[option - 1])
 	}
 }
 
@@ -65,5 +66,14 @@ mod tests {
 
 		let option = presenter.select_option(0);
 		assert_eq!(option, OptionResult::None);
+	}
+
+	#[test]
+	fn can_select_invalid_option() {
+		let options = vec![String::from("jank.meme"), String::from("funky.time")];
+		let presenter = OptionPresenter::new(&options);
+
+		let option = presenter.select_option(3);
+		assert_eq!(option, OptionResult::Invalid(3));
 	}
 }
