@@ -52,7 +52,7 @@ impl Controller {
 			self.download_exact_match(results[0])?;
 		} else if !results.is_empty() {
 			// TODO: Fix Vec<String> cloning
-			let results: Vec<String> = results.iter().map(|s| s.to_string()).collect();
+			let results: Vec<String> = results.iter().map(|s| (*s).to_string()).collect();
 			return self.handle_multiple_matches(query, &results);
 		} else {
 			println!("No matches found for '{}'", query);
