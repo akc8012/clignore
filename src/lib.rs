@@ -11,7 +11,7 @@ mod file_finder;
 mod file_maker;
 mod github_request_maker;
 mod github_url_builder;
-mod option_presenter;
+mod choice_presenter;
 mod request_maker;
 mod requester;
 mod test_request_maker;
