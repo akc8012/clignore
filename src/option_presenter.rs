@@ -25,7 +25,7 @@ mod tests {
 	use super::*;
 
 	#[test]
-	fn dank() {
+	fn can_present_list() {
 		let presenter = OptionPresenter::new();
 
 		let options = vec![String::from("jank.meme"), String::from("funky.time")];
