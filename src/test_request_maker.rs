@@ -27,15 +27,14 @@ impl Requester for TestRequestMaker {
 	}
 }
 
-#[allow(dead_code)] // TODO: Mark just for tests?
 impl TestRequestMaker {
+	#[cfg(test)]
 	pub fn new() -> TestRequestMaker {
 		TestRequestMaker {}
 	}
 
 	fn match_github_url(&self, url: &str) -> Result<GitHubUrl, ErrorBox> {
 		match url {
-			// TODO: Use GitHubUrlBuilder?
 			"https://api.github.com/repos/github/gitignore/commits?per_page=1" => 
 				Ok(GitHubUrl::Commits),
 			"https://api.github.com/repos/github/gitignore/git/trees/9431e108b67d1efa9df54e6351da1951bcd9be32?recursive=true" => 

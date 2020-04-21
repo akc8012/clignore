@@ -46,7 +46,7 @@ impl Controller {
 
 		if results.len() == 1 {
 			self.download_exact_match(results[0])?;
-		} else if results.len() > 0 {
+		} else if !results.is_empty() {
 			for file_name in results {
 				println!("{}", file_name);
 			}
