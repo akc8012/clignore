@@ -9,7 +9,6 @@ pub enum ChoiceResult<'o> {
 	None,
 }
 
-#[allow(dead_code)] // TODO: Remove me please
 impl<'o> ChoicePresenter<'o> {
 	pub fn new(choices: &'o [String]) -> ChoicePresenter<'o> {
 		ChoicePresenter { choices }
