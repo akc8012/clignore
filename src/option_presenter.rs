@@ -2,6 +2,14 @@ struct OptionPresenter<'o> {
 	options: &'o [String],
 }
 
+// TODO: Please for the love of god pick a better name
+#[derive(Debug, PartialEq)]
+enum OptionResult<'o> {
+	Some(&'o str),
+	Invalid(usize),
+	None,
+}
+
 #[allow(dead_code)] // TODO: Remove me please
 impl<'o> OptionPresenter<'o> {
 	pub fn new(options: &'o [String]) -> OptionPresenter<'o> {
@@ -20,12 +28,11 @@ impl<'o> OptionPresenter<'o> {
 		list
 	}
 
-	pub fn select_option(&self, option: usize) -> Option<&str> {
+	pub fn select_option(&self, option: usize) -> OptionResult {
 		if option == 0 {
-			return None;
+			return OptionResult::None;
 		}
-
-		Some(&self.options[option - 1])
+		OptionResult::Some(&self.options[option - 1])
 	}
 }
 
@@ -47,8 +54,8 @@ mod tests {
 		let options = vec![String::from("jank.meme"), String::from("funky.time")];
 		let presenter = OptionPresenter::new(&options);
 
-		let option = presenter.select_option(2).unwrap();
-		assert_eq!(option, "funky.time");
+		let option = presenter.select_option(2);
+		assert_eq!(option, OptionResult::Some("funky.time"));
 	}
 
 	#[test]
@@ -57,6 +64,6 @@ mod tests {
 		let presenter = OptionPresenter::new(&options);
 
 		let option = presenter.select_option(0);
-		assert_eq!(option, None);
+		assert_eq!(option, OptionResult::None);
 	}
 }
