@@ -1,21 +1,23 @@
-struct OptionPresenter;
+struct OptionPresenter<'o> {
+	options: &'o [String],
+}
 
 #[allow(dead_code)] // TODO: Remove me please
-impl OptionPresenter {
-	pub fn new() -> OptionPresenter {
-		OptionPresenter
+impl<'o> OptionPresenter<'o> {
+	pub fn new(options: &'o [String]) -> OptionPresenter<'o> {
+		OptionPresenter { options }
 	}
 
-	pub fn present_list(&self, options: &[String]) -> String {
+	pub fn present_options(&self) -> String {
 		let mut list = String::new();
-		for (element, option) in options.iter().enumerate() {
+
+		for (element, option) in self.options.iter().enumerate() {
 			list.push_str(&format!("[{}] {}", element + 1, option));
 
-			if element < options.len() - 1 {
+			if element < self.options.len() - 1 {
 				list.push('\n');
 			}
 		}
-
 		list
 	}
 }
@@ -25,12 +27,14 @@ mod tests {
 	use super::*;
 
 	#[test]
-	fn can_present_list() {
-		let presenter = OptionPresenter::new();
-
+	fn can_present_options() {
 		let options = vec![String::from("jank.meme"), String::from("funky.time")];
-		let list = presenter.present_list(&options);
+		let presenter = OptionPresenter::new(&options);
 
+		let list = presenter.present_options();
 		assert_eq!(list, "[1] jank.meme\n[2] funky.time");
 	}
+
+	// #[test]
+	// fn can_select_option() {}
 }
