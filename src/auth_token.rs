@@ -7,12 +7,11 @@ pub struct AuthToken {
 }
 
 impl AuthToken {
-	// TODO: return Result, Err when file not found
-	pub fn new(path: &str) -> AuthToken {
-		let token = Self::read_token_from_file(path)
-			.unwrap_or_else(|_| panic!("Could not find token file at path: {}", path));
-
-		AuthToken { token }
+	pub fn new(path: &str) -> Result<AuthToken, ErrorBox> {
+		match Self::read_token_from_file(path) {
+			Ok(token) => Ok(AuthToken { token }),
+			Err(_) => Err(format!("Could not find token file at path: {}", path).into()),
+		}
 	}
 
 	fn read_token_from_file(path: &str) -> Result<String, ErrorBox> {
@@ -35,13 +34,13 @@ mod tests {
 
 	#[test]
 	fn auth_token_opens_file() {
-		let token = AuthToken::new("test_token.txt");
+		let token = AuthToken::new("test_token.txt").unwrap();
 		assert_eq!(token.to_string(), "cheese sandwich");
 	}
 
 	#[test]
 	#[should_panic(expected = "Could not find token file at path: bacon_powder.txt")]
 	fn auth_token_error_includes_path() {
-		AuthToken::new("bacon_powder.txt");
+		AuthToken::new("bacon_powder.txt").unwrap();
 	}
 }

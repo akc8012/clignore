@@ -19,10 +19,10 @@ fn main() {
 		)
 		.get_matches();
 
-	let controller = Controller::new();
+	// TODO: Quit unwrapping in here, actually handle the errors (print output?)
+	let controller = Controller::new().unwrap();
 
 	if matches.is_present("list") {
-		// TODO: Quit unwrapping in here, actually handle the errors (print output?)
 		controller.list_files().unwrap();
 	}
 

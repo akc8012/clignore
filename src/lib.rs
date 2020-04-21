@@ -21,15 +21,16 @@ pub struct Controller {
 
 // TODO: Integration tests
 impl Controller {
-	pub fn new() -> Controller {
-		let request_maker = Self::create_request_maker();
-		Controller { request_maker }
+	pub fn new() -> Result<Controller, ErrorBox> {
+		let request_maker = Self::create_request_maker()?;
+		Ok(Controller { request_maker })
 	}
 
-	fn create_request_maker() -> GitHubRequestMaker<RequestMaker> {
-		let token = AuthToken::new("token.txt");
+	fn create_request_maker() -> Result<GitHubRequestMaker<RequestMaker>, ErrorBox> {
+		let token = AuthToken::new("token.txt")?;
 		let requester = RequestMaker::new(Some(token));
-		GitHubRequestMaker::new(requester)
+
+		Ok(GitHubRequestMaker::new(requester))
 	}
 
 	pub fn list_files(&self) -> Result<(), ErrorBox> {
