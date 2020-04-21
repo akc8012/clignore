@@ -15,7 +15,6 @@ impl Requester for RequestMaker {
 		Ok(body)
 	}
 
-	// TODO: wrapper object for json value?
 	fn get_json(&self, url: &str) -> Result<serde_json::Value, ErrorBox> {
 		self.get_json_deserialized(url)
 	}
@@ -60,7 +59,6 @@ impl RequestMaker {
 			headers.insert(
 				header::AUTHORIZATION,
 				header::HeaderValue::from_str(&token.to_string()).expect(
-					// TODO: Do this logic within AuthToken
 					"Could not parse token value. Make sure it doesn't contain invalid characters.",
 				),
 			);
