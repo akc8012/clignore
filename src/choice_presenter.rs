@@ -26,7 +26,10 @@ impl<'c> ChoicePresenter<'c> {
 		list
 	}
 
-	pub fn select_choice(&self, input: usize) -> ChoiceResult {
+	pub fn select_choice(&self, input: &str) -> ChoiceResult {
+		// TODO: Write test that fails here
+		let input = input.trim().parse().expect("Failed to parse choice");
+
 		match input {
 			0 => ChoiceResult::None,
 			o if o > self.choices.len() => ChoiceResult::Invalid(o),
@@ -57,7 +60,7 @@ mod tests {
 		let choices = vec![String::from("jank.meme"), String::from("funky.time")];
 		let presenter = ChoicePresenter::new(&choices);
 
-		let choice = presenter.select_choice(2);
+		let choice = presenter.select_choice("2");
 		assert_eq!(choice, ChoiceResult::Some("funky.time"));
 	}
 
@@ -66,7 +69,7 @@ mod tests {
 		let choices = vec![String::from("jank.meme"), String::from("funky.time")];
 		let presenter = ChoicePresenter::new(&choices);
 
-		let choice = presenter.select_choice(0);
+		let choice = presenter.select_choice("0");
 		assert_eq!(choice, ChoiceResult::None);
 	}
 
@@ -75,7 +78,7 @@ mod tests {
 		let choices = vec![String::from("jank.meme"), String::from("funky.time")];
 		let presenter = ChoicePresenter::new(&choices);
 
-		let choice = presenter.select_choice(3);
+		let choice = presenter.select_choice("3");
 		assert_eq!(choice, ChoiceResult::Invalid(3));
 	}
 }

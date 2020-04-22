@@ -83,19 +83,14 @@ impl Controller {
 
 		loop {
 			match self.get_choice(&choice_presenter) {
-				ChoiceResult::None => break,
-				ChoiceResult::Some(choice) => {
-					self.download_exact_match(choice)?;
-					break;
-				}
+				ChoiceResult::None => return Ok(()),
+				ChoiceResult::Some(choice) => return self.download_exact_match(choice),
 				ChoiceResult::Invalid(choice) => {
 					println!("'{}' is out of bounds. Try again.", choice);
 					continue;
 				}
 			}
 		}
-
-		Ok(())
 	}
 
 	fn get_choice<'c>(&self, choice_presenter: &'c ChoicePresenter) -> ChoiceResult<'c> {
@@ -105,9 +100,7 @@ impl Controller {
 		);
 
 		let input = self.get_choice_input();
-		choice_presenter
-			// TODO: select_choice should take in String, do parsing, throw up errors
-			.select_choice(input.trim().parse().expect("Failed to parse choice"))
+		choice_presenter.select_choice(&input)
 	}
 
 	fn get_choice_input(&self) -> String {
