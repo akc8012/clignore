@@ -83,10 +83,10 @@ impl Controller {
 
 		loop {
 			match self.get_choice(&choice_presenter) {
-				ChoiceResult::None => return Ok(()),
 				ChoiceResult::Some(choice) => return self.download_exact_match(choice),
-				ChoiceResult::Invalid(choice) => {
-					println!("'{}' is out of bounds. Try again.", choice);
+				ChoiceResult::None => return Ok(()),
+				ChoiceResult::Invalid => {
+					println!("Invalid input, please try again.");
 					continue;
 				}
 			}

@@ -5,7 +5,7 @@ pub struct ChoicePresenter<'c> {
 #[derive(Debug, PartialEq)]
 pub enum ChoiceResult<'c> {
 	Some(&'c str),
-	Invalid(usize),
+	Invalid,
 	None,
 }
 
@@ -32,7 +32,7 @@ impl<'c> ChoicePresenter<'c> {
 
 		match input {
 			0 => ChoiceResult::None,
-			o if o > self.choices.len() => ChoiceResult::Invalid(o),
+			i if i > self.choices.len() => ChoiceResult::Invalid,
 			_ => ChoiceResult::Some(&self.choices[input - 1]),
 		}
 	}
@@ -79,6 +79,6 @@ mod tests {
 		let presenter = ChoicePresenter::new(&choices);
 
 		let choice = presenter.select_choice("3");
-		assert_eq!(choice, ChoiceResult::Invalid(3));
+		assert_eq!(choice, ChoiceResult::Invalid);
 	}
 }
