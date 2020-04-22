@@ -44,3 +44,4 @@ TODO:
 
   Might be showing paths as filenames? Write a test for this.
   By default, users shouldn't care to set token. Warn when they get to close to limit, then suggest they run `ignore_cli token _____` to set.
+  Look into failure crate (easier error handling?)
