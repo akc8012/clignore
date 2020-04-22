@@ -39,8 +39,7 @@ EXCEPT: If we use the (optional) blocking module, we dont need this junk :)
 
 
 TODO:
-  Fix the unwraps and expects :(
   App fails when token is not in scope of working directory
-
   By default, users shouldn't care to set token. Warn when they get to close to limit, then suggest they run `ignore_cli token _____` to set.
+
   Look into failure crate (easier error handling?)
