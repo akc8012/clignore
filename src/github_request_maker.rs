@@ -22,7 +22,9 @@ impl<T: Requester> GitHubRequestMaker<T> {
 		)?;
 
 		let mut file_names = Vec::new();
-		for file in json["tree"].as_array().expect("wtf") {
+		let files = json["tree"].as_array().expect("wtf");
+
+		for file in files.iter().filter(|f| f["type"] == "blob") {
 			file_names.push(file["path"].as_str().expect("wtf").to_string());
 		}
 
@@ -104,6 +106,14 @@ mod tests {
 			file_names,
 			vec!["yeet.gitignore", "yoink.gitignore", "quite.gitignore"]
 		);
+	}
+
+	#[test]
+	fn cannot_get_path_names() {
+		let request_maker = GitHubRequestMaker::new(TestRequestMaker::new());
+		let file_names = request_maker.get_file_names().unwrap();
+
+		assert!(!file_names.iter().any(|f| f == "PathToDarkness"));
 	}
 
 	#[test]

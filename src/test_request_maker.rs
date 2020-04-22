@@ -44,9 +44,10 @@ impl TestRequestMaker {
 	fn tree_json(&self) -> serde_json::Value {
 		serde_json::json!(
 			{ "tree": [
-				{ "path": "yeet.gitignore" },
-				{ "path": "yoink.gitignore" },
-				{ "path": "quite.gitignore" }
+				{ "path": "yeet.gitignore", "type": "blob" },
+				{ "path": "yoink.gitignore", "type": "blob" },
+				{ "path": "quite.gitignore", "type": "blob" },
+				{ "path": "PathToDarkness", "type": "tree" },
 			] }
 		)
 	}
