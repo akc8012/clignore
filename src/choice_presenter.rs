@@ -1,13 +1,10 @@
+use crate::error_box::ErrorBox;
+
 pub struct ChoicePresenter<'c> {
 	choices: &'c [String],
 }
 
-#[derive(Debug, PartialEq)]
-pub enum ChoiceResult<'c> {
-	Some(&'c str),
-	Invalid,
-	None,
-}
+pub type ChoiceResult<'c> = Result<Option<&'c str>, ErrorBox>;
 
 impl<'c> ChoicePresenter<'c> {
 	pub fn new(choices: &'c [String]) -> ChoicePresenter<'c> {
@@ -26,14 +23,12 @@ impl<'c> ChoicePresenter<'c> {
 		list
 	}
 
-	pub fn select_choice(&self, input: &str) -> ChoiceResult {
-		match input.trim().parse() {
-			Ok(input) => match input {
-				0 => ChoiceResult::None,
-				i if i > self.choices.len() => ChoiceResult::Invalid,
-				_ => ChoiceResult::Some(&self.choices[input - 1]),
-			},
-			Err(_) => ChoiceResult::Invalid,
+	pub fn select_choice(&'c self, input: &str) -> ChoiceResult {
+		let input = input.trim().parse()?;
+		match input {
+			0 => Ok(None),
+			i if i > self.choices.len() => Err("".into()),
+			_ => Ok(Some(&self.choices[input - 1])),
 		}
 	}
 
@@ -60,8 +55,17 @@ mod tests {
 		let choices = vec![String::from("jank.meme"), String::from("funky.time")];
 		let presenter = ChoicePresenter::new(&choices);
 
-		let choice = presenter.select_choice("2");
-		assert_eq!(choice, ChoiceResult::Some("funky.time"));
+		let choice = presenter.select_choice("2").unwrap();
+		assert_eq!(choice, Some("funky.time"));
+	}
+
+	#[test]
+	fn can_select_untrimmed_choice() {
+		let choices = vec![String::from("jank.meme"), String::from("funky.time")];
+		let presenter = ChoicePresenter::new(&choices);
+
+		let choice = presenter.select_choice(" 2   \n    ").unwrap();
+		assert_eq!(choice, Some("funky.time"));
 	}
 
 	#[test]
@@ -69,8 +73,8 @@ mod tests {
 		let choices = vec![String::from("jank.meme"), String::from("funky.time")];
 		let presenter = ChoicePresenter::new(&choices);
 
-		let choice = presenter.select_choice("0");
-		assert_eq!(choice, ChoiceResult::None);
+		let choice = presenter.select_choice("0").unwrap();
+		assert_eq!(choice, None);
 	}
 
 	#[test]
@@ -81,7 +85,7 @@ mod tests {
 		let choice_out_of_bounds = presenter.select_choice("3");
 		let choice_not_a_number = presenter.select_choice("sasafrass");
 
-		assert_eq!(choice_out_of_bounds, ChoiceResult::Invalid);
-		assert_eq!(choice_not_a_number, ChoiceResult::Invalid);
+		assert!(choice_out_of_bounds.is_err());
+		assert!(choice_not_a_number.is_err());
 	}
 }

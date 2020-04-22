@@ -83,9 +83,11 @@ impl Controller {
 
 		loop {
 			match self.get_choice(&choice_presenter) {
-				ChoiceResult::Some(choice) => return self.download_exact_match(choice),
-				ChoiceResult::None => return Ok(()),
-				ChoiceResult::Invalid => {
+				Ok(choice) => match choice {
+					Some(choice) => return self.download_exact_match(choice),
+					None => return Ok(()),
+				},
+				Err(_) => {
 					println!("Invalid input, please try again.");
 					continue;
 				}
