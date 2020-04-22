@@ -53,7 +53,7 @@ impl Controller {
 		} else if !results.is_empty() {
 			// TODO: Fix Vec<String> cloning
 			let results: Vec<String> = results.iter().map(|s| (*s).to_string()).collect();
-			return self.handle_multiple_matches(query, &results);
+			self.handle_multiple_matches(query, &results)?;
 		} else {
 			println!("No matches found for '{}'", query);
 		}
@@ -81,21 +81,24 @@ impl Controller {
 		let choice_presenter = ChoicePresenter::new(results);
 		println!("{}\n", choice_presenter.present_choices());
 
-		println!(
-			"Which do you want to use (0 to cancel)? [0-{}]:",
-			choice_presenter.len()
-		);
+		loop {
+			println!(
+				"Which do you want to use (0 to cancel)? [0-{}]:",
+				choice_presenter.len()
+			);
 
-		let mut choice = String::new();
-		io::stdin()
-			.read_line(&mut choice)
-			.expect("Failed to read line");
+			let mut choice = String::new();
+			io::stdin().read_line(&mut choice)?;
 
-		let result = choice_presenter.select_choice(choice.trim().parse().unwrap());
-		match result {
-			ChoiceResult::Some(choice) => self.download_exact_match(choice),
-			ChoiceResult::None => Ok(()),
-			ChoiceResult::Invalid(choice) => panic!("'{}' is out of bounds. Try again.", choice), // TODO: This should be a loop, not a panic
+			let result = choice_presenter.select_choice(choice.trim().parse()?);
+			match result {
+				ChoiceResult::Some(choice) => self.download_exact_match(choice)?,
+				ChoiceResult::None => return Ok(()),
+				ChoiceResult::Invalid(choice) => {
+					println!("'{}' is out of bounds. Try again.", choice);
+					continue;
+				}
+			}
 		}
 	}
 }
