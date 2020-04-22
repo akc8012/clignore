@@ -5,7 +5,7 @@ pub struct TestRequestMaker;
 
 impl Requester for TestRequestMaker {
 	fn get(&self, _url: &str) -> Result<String, ErrorBox> {
-		panic!("I have no definition and I must scream");
+		unimplemented!();
 	}
 
 	fn get_json(&self, url: &str) -> Result<serde_json::Value, ErrorBox> {
@@ -13,7 +13,7 @@ impl Requester for TestRequestMaker {
 	}
 
 	fn get_json_deserialized<T: DeserializeOwned>(&self, _url: &str) -> Result<T, ErrorBox> {
-		panic!("I have no definition and I must scream");
+		unimplemented!();
 	}
 }
 
