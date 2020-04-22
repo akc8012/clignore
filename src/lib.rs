@@ -37,7 +37,7 @@ impl Controller {
 	}
 
 	pub fn list_files(&self) -> Result<(), ErrorBox> {
-		for file_name in &self.get_file_names()? {
+		for file_name in self.request_maker.get_file_names()? {
 			println!("{}", file_name);
 		}
 
@@ -45,7 +45,7 @@ impl Controller {
 	}
 
 	pub fn find_files(&self, query: &str) -> Result<(), ErrorBox> {
-		let file_names = self.get_file_names()?;
+		let file_names = self.request_maker.get_file_names()?;
 		let results = FileFinder::find(&file_names, query);
 
 		if results.len() == 1 {
@@ -59,10 +59,6 @@ impl Controller {
 		}
 
 		Ok(())
-	}
-
-	fn get_file_names(&self) -> Result<Vec<String>, ErrorBox> {
-		self.request_maker.get_file_names()
 	}
 
 	fn download_exact_match(&self, file_name: &str) -> Result<(), ErrorBox> {
