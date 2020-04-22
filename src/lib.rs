@@ -82,23 +82,37 @@ impl Controller {
 		println!("{}\n", choice_presenter.present_choices());
 
 		loop {
-			println!(
-				"Which do you want to use (0 to cancel)? [0-{}]:",
-				choice_presenter.len()
-			);
-
-			let mut choice = String::new();
-			io::stdin().read_line(&mut choice)?;
-
-			let result = choice_presenter.select_choice(choice.trim().parse()?);
-			match result {
-				ChoiceResult::Some(choice) => self.download_exact_match(choice)?,
-				ChoiceResult::None => return Ok(()),
+			match self.get_choice(&choice_presenter) {
+				ChoiceResult::None => break,
+				ChoiceResult::Some(choice) => {
+					self.download_exact_match(choice)?;
+					break;
+				}
 				ChoiceResult::Invalid(choice) => {
 					println!("'{}' is out of bounds. Try again.", choice);
 					continue;
 				}
 			}
 		}
+
+		Ok(())
+	}
+
+	fn get_choice<'c>(&self, choice_presenter: &'c ChoicePresenter) -> ChoiceResult<'c> {
+		println!(
+			"Which do you want to use (0 to cancel)? [0-{}]:",
+			choice_presenter.len()
+		);
+
+		let input = self.get_choice_input();
+		choice_presenter
+			// TODO: select_choice should take in String, do parsing, throw up errors
+			.select_choice(input.trim().parse().expect("Failed to parse choice"))
+	}
+
+	fn get_choice_input(&self) -> String {
+		let mut choice = String::new();
+		io::stdin().read_line(&mut choice).unwrap();
+		choice
 	}
 }
