@@ -1,16 +1,16 @@
-pub struct ChoicePresenter<'o> {
-	choices: &'o [String],
+pub struct ChoicePresenter<'c> {
+	choices: &'c [String],
 }
 
 #[derive(Debug, PartialEq)]
-pub enum ChoiceResult<'o> {
-	Some(&'o str),
+pub enum ChoiceResult<'c> {
+	Some(&'c str),
 	Invalid(usize),
 	None,
 }
 
-impl<'o> ChoicePresenter<'o> {
-	pub fn new(choices: &'o [String]) -> ChoicePresenter<'o> {
+impl<'c> ChoicePresenter<'c> {
+	pub fn new(choices: &'c [String]) -> ChoicePresenter<'c> {
 		ChoicePresenter { choices }
 	}
 
@@ -26,11 +26,11 @@ impl<'o> ChoicePresenter<'o> {
 		list
 	}
 
-	pub fn select_choice(&self, choice: usize) -> ChoiceResult {
-		match choice {
+	pub fn select_choice(&self, input: usize) -> ChoiceResult {
+		match input {
 			0 => ChoiceResult::None,
 			o if o > self.choices.len() => ChoiceResult::Invalid(o),
-			_ => ChoiceResult::Some(&self.choices[choice - 1]),
+			_ => ChoiceResult::Some(&self.choices[input - 1]),
 		}
 	}
 
