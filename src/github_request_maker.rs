@@ -31,7 +31,6 @@ impl<T: Requester> GitHubRequestMaker<T> {
 		Ok(file_names)
 	}
 
-	#[allow(dead_code)]
 	pub fn get_file(&self, path: &str) -> Result<String, ErrorBox> {
 		let json = self.get(
 			GitHubUrlBuilder::new()
