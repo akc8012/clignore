@@ -60,6 +60,15 @@ mod tests {
 	}
 
 	#[test]
+	fn can_select_untrimmed_choice() {
+		let choices = vec![String::from("jank.meme"), String::from("funky.time")];
+		let presenter = ChoicePresenter::new(&choices);
+
+		let choice = presenter.select_choice(" 2   \n    ").unwrap();
+		assert_eq!(choice, Some("funky.time"));
+	}
+
+	#[test]
 	fn can_select_none_choice() {
 		let choices = vec![String::from("jank.meme"), String::from("funky.time")];
 		let presenter = ChoicePresenter::new(&choices);
