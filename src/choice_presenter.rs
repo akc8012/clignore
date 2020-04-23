@@ -4,7 +4,7 @@ pub struct ChoicePresenter {
 	choices: Vec<String>,
 }
 
-pub type ChoiceResult = Result<Option<String>, ErrorBox>;
+pub type ChoiceResult<'c> = Result<Option<&'c str>, ErrorBox>;
 
 impl ChoicePresenter {
 	pub fn new(choices: Vec<String>) -> ChoicePresenter {
@@ -23,12 +23,12 @@ impl ChoicePresenter {
 		list
 	}
 
-	pub fn select_choice(&self, input: &str) -> ChoiceResult {
+	pub fn select_choice<'c>(&'c self, input: &str) -> ChoiceResult<'c> {
 		let input = input.trim().parse()?;
 		match input {
 			0 => Ok(None),
 			i if i > self.choices.len() => Err("".into()),
-			_ => Ok(Some(self.choices[input - 1].clone())), // TODO: .clone() bad
+			_ => Ok(Some(&self.choices[input - 1])),
 		}
 	}
 

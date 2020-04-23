@@ -89,7 +89,7 @@ impl Controller {
 		}
 	}
 
-	fn get_choice(&self, choice_presenter: &ChoicePresenter) -> ChoiceResult {
+	fn get_choice<'c>(&self, choice_presenter: &'c ChoicePresenter) -> ChoiceResult<'c> {
 		println!(
 			"Which do you want to use (0 to cancel)? [0-{}]:",
 			choice_presenter.len()
