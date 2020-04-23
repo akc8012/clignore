@@ -1,22 +1,18 @@
 pub struct FileFinder;
 
 impl FileFinder {
-	pub fn find<'s>(file_names: &'s [String], query: &str) -> Vec<&'s String> {
-		let mut indices = Vec::new();
-		for (index, file_name) in file_names.iter().enumerate() {
+	pub fn find(file_names: &[String], query: &str) -> Vec<String> {
+		let mut results = Vec::new();
+		for file_name in file_names {
 			if Self::matches(file_name, query) {
-				indices.push(index);
+				results.push(file_name.into());
 			}
 		}
-		Self::subset(&file_names, &indices)
+		results
 	}
 
 	fn matches(file_name: &str, query: &str) -> bool {
 		file_name.to_lowercase().contains(&query.to_lowercase())
-	}
-
-	fn subset<'s>(file_names: &'s [String], indices: &[usize]) -> Vec<&'s String> {
-		indices.iter().map(|&i| &file_names[i]).collect()
 	}
 }
 
@@ -31,7 +27,7 @@ mod tests {
 			String::from("yeet.gitignore"),
 			String::from("quite.gitignore"),
 		];
-		let result = FileFinder::find(&file_names, "yeet")[0];
+		let result = &FileFinder::find(&file_names, "yeet")[0];
 		assert_eq!(result, "yeet.gitignore");
 	}
 
@@ -42,7 +38,7 @@ mod tests {
 			String::from("yeet.gitignore"),
 			String::from("quite.gitignore"),
 		];
-		let result = FileFinder::find(&file_names, "YeEt")[0];
+		let result = &FileFinder::find(&file_names, "YeEt")[0];
 		assert_eq!(result, "yeet.gitignore");
 	}
 

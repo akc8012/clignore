@@ -1,13 +1,13 @@
 use crate::error_box::ErrorBox;
 
-pub struct ChoicePresenter<'c> {
-	choices: Vec<&'c String>,
+pub struct ChoicePresenter {
+	choices: Vec<String>,
 }
 
-pub type ChoiceResult<'c> = Result<Option<&'c String>, ErrorBox>;
+pub type ChoiceResult = Result<Option<String>, ErrorBox>;
 
-impl<'c> ChoicePresenter<'c> {
-	pub fn new(choices: Vec<&'c String>) -> ChoicePresenter<'c> {
+impl ChoicePresenter {
+	pub fn new(choices: Vec<String>) -> ChoicePresenter {
 		ChoicePresenter { choices }
 	}
 
@@ -23,12 +23,12 @@ impl<'c> ChoicePresenter<'c> {
 		list
 	}
 
-	pub fn select_choice(&'c self, input: &str) -> ChoiceResult {
+	pub fn select_choice(&self, input: &str) -> ChoiceResult {
 		let input = input.trim().parse()?;
 		match input {
 			0 => Ok(None),
 			i if i > self.choices.len() => Err("".into()),
-			_ => Ok(Some(&self.choices[input - 1])),
+			_ => Ok(Some(self.choices[input - 1].clone())), // TODO: .clone() bad
 		}
 	}
 
@@ -43,10 +43,7 @@ mod tests {
 
 	#[test]
 	fn can_present_choices() {
-		let jank = &"jank.meme".to_owned();
-		let funky = &"funky.time".to_owned();
-		let choices = vec![jank, funky];
-
+		let choices = vec!["jank.meme".into(), "funky.time".into()];
 		let presenter = ChoicePresenter::new(choices);
 
 		let list = presenter.present_choices();
@@ -55,34 +52,25 @@ mod tests {
 
 	#[test]
 	fn can_select_choice() {
-		let jank = &"jank.meme".to_owned();
-		let funky = &"funky.time".to_owned();
-		let choices = vec![jank, funky];
-
+		let choices = vec!["jank.meme".into(), "funky.time".into()];
 		let presenter = ChoicePresenter::new(choices);
 
 		let choice = presenter.select_choice("2").unwrap();
-		assert_eq!(choice, Some(&"funky.time".into()));
+		assert_eq!(choice, Some("funky.time".into()));
 	}
 
 	#[test]
 	fn can_select_untrimmed_choice() {
-		let jank = &"jank.meme".to_owned();
-		let funky = &"funky.time".to_owned();
-		let choices = vec![jank, funky];
-
+		let choices = vec!["jank.meme".into(), "funky.time".into()];
 		let presenter = ChoicePresenter::new(choices);
 
 		let choice = presenter.select_choice(" 2   \n    ").unwrap();
-		assert_eq!(choice, Some(&"funky.time".into()));
+		assert_eq!(choice, Some("funky.time".into()));
 	}
 
 	#[test]
 	fn can_select_none_choice() {
-		let jank = &"jank.meme".to_owned();
-		let funky = &"funky.time".to_owned();
-		let choices = vec![jank, funky];
-
+		let choices = vec!["jank.meme".into(), "funky.time".into()];
 		let presenter = ChoicePresenter::new(choices);
 
 		let choice = presenter.select_choice("0").unwrap();
@@ -91,10 +79,7 @@ mod tests {
 
 	#[test]
 	fn can_select_invalid_choice() {
-		let jank = &"jank.meme".to_owned();
-		let funky = &"funky.time".to_owned();
-		let choices = vec![jank, funky];
-
+		let choices = vec!["jank.meme".into(), "funky.time".into()];
 		let presenter = ChoicePresenter::new(choices);
 
 		let choice_out_of_bounds = presenter.select_choice("3");

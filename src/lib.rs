@@ -49,7 +49,7 @@ impl Controller {
 		let results = FileFinder::find(&file_names, query);
 
 		if results.len() == 1 {
-			self.download_exact_match(results[0])?;
+			self.download_exact_match(&results[0])?;
 		} else if !results.is_empty() {
 			self.handle_multiple_matches(query, results)?;
 		} else {
@@ -69,7 +69,7 @@ impl Controller {
 		Ok(())
 	}
 
-	fn handle_multiple_matches(&self, query: &str, results: Vec<&String>) -> Result<(), ErrorBox> {
+	fn handle_multiple_matches(&self, query: &str, results: Vec<String>) -> Result<(), ErrorBox> {
 		println!("Several matches found for '{}':\n", query);
 
 		let choice_presenter = ChoicePresenter::new(results);
@@ -78,7 +78,7 @@ impl Controller {
 		loop {
 			match self.get_choice(&choice_presenter) {
 				Ok(choice) => match choice {
-					Some(choice) => return self.download_exact_match(choice),
+					Some(choice) => return self.download_exact_match(&choice),
 					None => return Ok(()),
 				},
 				Err(_) => {
@@ -89,7 +89,7 @@ impl Controller {
 		}
 	}
 
-	fn get_choice<'c>(&self, choice_presenter: &'c ChoicePresenter) -> ChoiceResult<'c> {
+	fn get_choice(&self, choice_presenter: &ChoicePresenter) -> ChoiceResult {
 		println!(
 			"Which do you want to use (0 to cancel)? [0-{}]:",
 			choice_presenter.len()
