@@ -23,9 +23,9 @@ mod tests {
 	#[test]
 	fn can_find_file() {
 		let file_names = vec![
-			String::from("yoink.gitignore"),
-			String::from("yeet.gitignore"),
-			String::from("quite.gitignore"),
+			"yoink.gitignore".into(),
+			"yeet.gitignore".into(),
+			"quite.gitignore".into(),
 		];
 		let result = &FileFinder::find(&file_names, "yeet")[0];
 		assert_eq!(result, "yeet.gitignore");
@@ -34,9 +34,9 @@ mod tests {
 	#[test]
 	fn can_find_file_case_insensitive() {
 		let file_names = vec![
-			String::from("yoink.gitignore"),
-			String::from("yeet.gitignore"),
-			String::from("quite.gitignore"),
+			"yoink.gitignore".into(),
+			"yeet.gitignore".into(),
+			"quite.gitignore".into(),
 		];
 		let result = &FileFinder::find(&file_names, "YeEt")[0];
 		assert_eq!(result, "yeet.gitignore");
@@ -44,7 +44,7 @@ mod tests {
 
 	#[test]
 	fn can_find_no_files() {
-		let file_names = vec![String::from("cheese"), String::from("pizza")];
+		let file_names = vec!["cheese".into(), "pizza".into()];
 		let result = FileFinder::find(&file_names, "quite");
 		assert_eq!(result.len(), 0);
 	}
@@ -52,9 +52,9 @@ mod tests {
 	#[test]
 	fn can_find_multiple_files() {
 		let file_names = vec![
-			String::from("funko.gitignore"),
-			String::from("lumpo.gitignore"),
-			String::from("dunko.gitignore"),
+			"funko.gitignore".into(),
+			"lumpo.gitignore".into(),
+			"dunko.gitignore".into(),
 		];
 		let result = FileFinder::find(&file_names, "unko");
 		assert_eq!(result, vec!["funko.gitignore", "dunko.gitignore"]);
