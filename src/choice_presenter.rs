@@ -1,13 +1,13 @@
 use crate::error_box::ErrorBox;
 
 pub struct ChoicePresenter<'c> {
-	choices: &'c [String],
+	choices: &'c [&'c str],
 }
 
 pub type ChoiceResult<'c> = Result<Option<&'c str>, ErrorBox>;
 
 impl<'c> ChoicePresenter<'c> {
-	pub fn new(choices: &'c [String]) -> ChoicePresenter<'c> {
+	pub fn new(choices: &'c [&'c str]) -> ChoicePresenter<'c> {
 		ChoicePresenter { choices }
 	}
 
@@ -43,7 +43,7 @@ mod tests {
 
 	#[test]
 	fn can_present_choices() {
-		let choices = vec![String::from("jank.meme"), String::from("funky.time")];
+		let choices = vec!["jank.meme", "funky.time"];
 		let presenter = ChoicePresenter::new(&choices);
 
 		let list = presenter.present_choices();
@@ -52,7 +52,7 @@ mod tests {
 
 	#[test]
 	fn can_select_choice() {
-		let choices = vec![String::from("jank.meme"), String::from("funky.time")];
+		let choices = vec!["jank.meme", "funky.time"];
 		let presenter = ChoicePresenter::new(&choices);
 
 		let choice = presenter.select_choice("2").unwrap();
@@ -61,7 +61,7 @@ mod tests {
 
 	#[test]
 	fn can_select_untrimmed_choice() {
-		let choices = vec![String::from("jank.meme"), String::from("funky.time")];
+		let choices = vec!["jank.meme", "funky.time"];
 		let presenter = ChoicePresenter::new(&choices);
 
 		let choice = presenter.select_choice(" 2   \n    ").unwrap();
@@ -70,7 +70,7 @@ mod tests {
 
 	#[test]
 	fn can_select_none_choice() {
-		let choices = vec![String::from("jank.meme"), String::from("funky.time")];
+		let choices = vec!["jank.meme", "funky.time"];
 		let presenter = ChoicePresenter::new(&choices);
 
 		let choice = presenter.select_choice("0").unwrap();
@@ -79,7 +79,7 @@ mod tests {
 
 	#[test]
 	fn can_select_invalid_choice() {
-		let choices = vec![String::from("jank.meme"), String::from("funky.time")];
+		let choices = vec!["jank.meme", "funky.time"];
 		let presenter = ChoicePresenter::new(&choices);
 
 		let choice_out_of_bounds = presenter.select_choice("3");
