@@ -31,6 +31,8 @@ impl TestRequestMaker {
 				Ok(self.tree_json()),
 			"https://api.github.com/repos/github/gitignore/contents/dank.gitignore" =>
 				Ok(self.file_json()),
+			"https://api.github.com/rate_limit" =>
+				Ok(self.rate_limit()),
 			_ => Err(format!("Unknown GitHub url: {}", url).into())
 		}
 	}
@@ -54,5 +56,9 @@ impl TestRequestMaker {
 
 	fn file_json(&self) -> serde_json::Value {
 		serde_json::json!({ "content": "LmlkZWE=" })
+	}
+
+	fn rate_limit(&self) -> serde_json::Value {
+		serde_json::json!({ "resources": { "core": { "remaining": 10 } } })
 	}
 }

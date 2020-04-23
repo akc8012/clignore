@@ -58,16 +58,29 @@ impl<T: Requester> GitHubRequestMaker<T> {
 	}
 
 	// TODO: Warn when we get too close to rate limit
-	#[allow(dead_code)]
+	#[cfg(test)]
 	pub fn is_authenticated(&self) -> Result<bool, ErrorBox> {
-		let json = self.get(GitHubUrlBuilder::new().with_path("rate_limit"))?;
+		Ok(self.get_rate_limit("limit")? == 5000)
+	}
 
-		let rate_limit = json["resources"]["core"]["limit"].as_i64().expect("wtf");
-		Ok(rate_limit == 5000)
+	#[allow(dead_code)] // TODO: yeet me into thy sun
+	pub fn too_close_to_limit(&self) -> Result<Option<u16>, ErrorBox> {
+		let rate_limit = self.get_rate_limit("remaining")?;
+
+		if rate_limit <= 10 {
+			Ok(Some(rate_limit as u16))
+		} else {
+			Ok(None)
+		}
 	}
 
 	fn get(&self, url: GitHubUrlBuilder) -> Result<serde_json::Value, ErrorBox> {
 		self.request_maker.get_json(&url.build())
+	}
+
+	fn get_rate_limit(&self, key: &str) -> Result<u64, ErrorBox> {
+		let json = self.get(GitHubUrlBuilder::new().with_path("rate_limit"))?;
+		Ok(json["resources"]["core"][key].as_u64().expect("wtf"))
 	}
 }
 
@@ -121,5 +134,16 @@ mod tests {
 		let file = request_maker.get_file("dank.gitignore").unwrap();
 
 		assert_eq!(file, ".idea");
+	}
+
+	#[test]
+	fn bojangles() {
+		let request_maker = GitHubRequestMaker::new(TestRequestMaker::new());
+		let result = request_maker.too_close_to_limit().unwrap();
+
+		match result {
+			Some(limit) => assert_eq!(limit, 10),
+			None => assert!(false),
+		}
 	}
 }
