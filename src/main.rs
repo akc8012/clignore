@@ -27,6 +27,8 @@ fn main() {
 	}
 
 	if let Some(matches) = matches.subcommand_matches("find") {
-		controller.find_files(matches.value_of("input").unwrap()).unwrap();
+		controller
+			.find_files(matches.value_of("input").unwrap())
+			.unwrap();
 	}
 }

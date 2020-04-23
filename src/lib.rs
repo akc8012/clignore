@@ -30,7 +30,17 @@ impl Controller {
 
 	fn create_request_maker() -> Result<GitHubRequestMaker<RequestMaker>, ErrorBox> {
 		let requester = RequestMaker::new(None);
-		Ok(GitHubRequestMaker::new(requester))
+		let request_maker = GitHubRequestMaker::new(requester);
+
+		// TODO: Handle unauthenticated error when we see limit has hit 0
+		if let Some(limit) = request_maker.too_close_to_limit()? {
+			println!(
+				"Warning: The GitHub API will only allow you to make {} more requests for the hour. Consider providing an authentication token.",
+				limit
+			)
+		}
+
+		Ok(request_maker)
 	}
 
 	pub fn list_files(&self) -> Result<(), ErrorBox> {

@@ -57,13 +57,11 @@ impl<T: Requester> GitHubRequestMaker<T> {
 		Ok(sha.to_string())
 	}
 
-	// TODO: Warn when we get too close to rate limit
 	#[cfg(test)]
 	pub fn is_authenticated(&self) -> Result<bool, ErrorBox> {
 		Ok(self.get_rate_limit("limit")? == 5000)
 	}
 
-	#[allow(dead_code)] // TODO: yeet me into thy sun
 	pub fn too_close_to_limit(&self) -> Result<Option<u16>, ErrorBox> {
 		let rate_limit = self.get_rate_limit("remaining")?;
 
