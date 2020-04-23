@@ -1,7 +1,7 @@
 pub struct FileFinder;
 
 impl FileFinder {
-	pub fn find<'s>(file_names: &'s [String], query: &str) -> Vec<&'s str> {
+	pub fn find<'s>(file_names: &'s [String], query: &str) -> Vec<&'s String> {
 		let mut indices = Vec::new();
 		for (index, file_name) in file_names.iter().enumerate() {
 			if Self::matches(file_name, query) {
@@ -15,8 +15,8 @@ impl FileFinder {
 		file_name.to_lowercase().contains(&query.to_lowercase())
 	}
 
-	fn subset<'s>(file_names: &'s [String], indices: &[usize]) -> Vec<&'s str> {
-		indices.iter().map(|&i| file_names[i].as_str()).collect()
+	fn subset<'s>(file_names: &'s [String], indices: &[usize]) -> Vec<&'s String> {
+		indices.iter().map(|&i| &file_names[i]).collect()
 	}
 }
 

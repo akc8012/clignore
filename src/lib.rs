@@ -51,7 +51,7 @@ impl Controller {
 		if results.len() == 1 {
 			self.download_exact_match(results[0])?;
 		} else if !results.is_empty() {
-			self.handle_multiple_matches(query, &results)?;
+			self.handle_multiple_matches(query, results)?;
 		} else {
 			println!("No matches found for '{}'", query);
 		}
@@ -69,7 +69,7 @@ impl Controller {
 		Ok(())
 	}
 
-	fn handle_multiple_matches(&self, query: &str, results: &[&str]) -> Result<(), ErrorBox> {
+	fn handle_multiple_matches(&self, query: &str, results: Vec<&String>) -> Result<(), ErrorBox> {
 		println!("Several matches found for '{}':\n", query);
 
 		let choice_presenter = ChoicePresenter::new(results);
