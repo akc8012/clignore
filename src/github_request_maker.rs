@@ -135,7 +135,7 @@ mod tests {
 	}
 
 	#[test]
-	fn bojangles() {
+	fn can_get_too_close_to_limit() {
 		let request_maker = GitHubRequestMaker::new(TestRequestMaker::new());
 		let result = request_maker.too_close_to_limit().unwrap();
 
