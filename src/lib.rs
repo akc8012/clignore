@@ -1,4 +1,3 @@
-use auth_token::AuthToken;
 use choice_presenter::{ChoicePresenter, ChoiceResult};
 use error_box::ErrorBox;
 use file_finder::FileFinder;
@@ -30,9 +29,7 @@ impl Controller {
 	}
 
 	fn create_request_maker() -> Result<GitHubRequestMaker<RequestMaker>, ErrorBox> {
-		let token = AuthToken::new("token.txt")?;
-		let requester = RequestMaker::new(Some(token));
-
+		let requester = RequestMaker::new(None);
 		Ok(GitHubRequestMaker::new(requester))
 	}
 

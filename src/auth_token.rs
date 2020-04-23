@@ -6,6 +6,7 @@ pub struct AuthToken {
 	token: String,
 }
 
+#[allow(dead_code)] // TODO: yeet me into the sun
 impl AuthToken {
 	pub fn new(path: &str) -> Result<AuthToken, ErrorBox> {
 		match Self::read_token_from_file(path) {
