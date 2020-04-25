@@ -4,7 +4,7 @@ use predicates::prelude::*;
 #[test]
 fn can_run_list() {
 	let (dir, _token) = helpers::create_temp_dir_with_token();
-	let mut cmd = helpers::create_cmd_at_dir(&dir);
+	let mut cmd = helpers::create_cmd(&dir);
 
 	cmd.arg("list");
 	cmd.assert()
@@ -17,35 +17,44 @@ fn can_run_list() {
 #[test]
 fn can_run_find_single_match() {
 	let (dir, _token) = helpers::create_temp_dir_with_token();
-	let mut cmd = helpers::create_cmd_at_dir(&dir);
+	let mut cmd = helpers::create_cmd(&dir);
 
 	cmd.arg("find").arg("rust");
 	cmd.assert()
 		.success()
 		.stdout(predicate::str::contains("Downloaded 'Rust.gitignore'"));
+
+	let gitignore = helpers::get_gitignore(&dir);
+	assert!(predicate::str::contains("/target/").eval(&gitignore));
 }
 
 #[test]
 fn can_run_find_single_incomplete_match() {
 	let (dir, _token) = helpers::create_temp_dir_with_token();
-	let mut cmd = helpers::create_cmd_at_dir(&dir);
+	let mut cmd = helpers::create_cmd(&dir);
 
 	cmd.arg("find").arg("godo");
 	cmd.assert()
 		.success()
 		.stdout(predicate::str::contains("Downloaded 'Godot.gitignore'"));
+
+	let gitignore = helpers::get_gitignore(&dir);
+	assert!(predicate::str::contains("export.cfg").eval(&gitignore));
 }
 
 #[test]
 fn can_run_find_multiple_matches() {
 	let (dir, _token) = helpers::create_temp_dir_with_token();
-	let mut cmd = helpers::create_cmd_at_dir(&dir);
+	let mut cmd = helpers::create_cmd(&dir);
 
 	cmd.arg("find").arg("python").write_stdin("1");
 	cmd.assert()
 		.success()
 		.stdout(predicate::str::contains("[1] Python.gitignore"))
 		.stdout(predicate::str::contains("Downloaded 'Python.gitignore'"));
+
+	let gitignore = helpers::get_gitignore(&dir);
+	assert!(predicate::str::contains(".Python").eval(&gitignore));
 }
 
 mod helpers {
@@ -55,7 +64,7 @@ mod helpers {
 	use std::io::{Read, Write};
 	use tempfile::{Builder, NamedTempFile, TempDir};
 
-	pub fn create_cmd_at_dir(dir: &TempDir) -> Command {
+	pub fn create_cmd(dir: &TempDir) -> Command {
 		let mut cmd = Command::cargo_bin("ignore_cli").unwrap();
 		cmd.current_dir(dir);
 		cmd
@@ -72,11 +81,15 @@ mod helpers {
 			.tempfile_in(&dir)
 			.unwrap();
 
-		write!(file, "{}", read_token_from_file("token.txt")).unwrap();
+		write!(file, "{}", read_from_file("token.txt")).unwrap();
 		(dir, file)
 	}
 
-	fn read_token_from_file(path: &str) -> String {
+	pub fn get_gitignore(dir: &TempDir) -> String {
+		read_from_file(&format!("{}/.gitignore", dir.path().to_str().unwrap()))
+	}
+
+	fn read_from_file(path: &str) -> String {
 		let mut token = String::new();
 		File::open(path)
 			.unwrap()
