@@ -56,6 +56,8 @@ impl RequestMaker {
 		let mut headers = header::HeaderMap::new();
 
 		if let Some(token) = &self.token {
+			println!("{}", &token.to_string());
+
 			headers.insert(
 				header::AUTHORIZATION,
 				header::HeaderValue::from_str(&token.to_string()).expect(
