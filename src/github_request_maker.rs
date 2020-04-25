@@ -1,6 +1,5 @@
 use crate::github_url_builder::GitHubUrlBuilder;
 use crate::{error_box::ErrorBox, requester::Requester};
-use base64;
 
 pub struct GitHubRequestMaker<T: Requester> {
 	request_maker: T,
