@@ -24,7 +24,7 @@ fn can_run_find_single_match() {
 		.success()
 		.stdout(predicate::str::contains("Downloaded 'Rust.gitignore'"));
 
-	let gitignore = helpers::get_gitignore(&dir);
+	let gitignore = helpers::get_gitignore(&dir).unwrap();
 	assert!(predicate::str::contains("/target/").eval(&gitignore));
 }
 
@@ -38,7 +38,7 @@ fn can_run_find_single_incomplete_match() {
 		.success()
 		.stdout(predicate::str::contains("Downloaded 'Godot.gitignore'"));
 
-	let gitignore = helpers::get_gitignore(&dir);
+	let gitignore = helpers::get_gitignore(&dir).unwrap();
 	assert!(predicate::str::contains("export.cfg").eval(&gitignore));
 }
 
@@ -53,8 +53,20 @@ fn can_run_find_multiple_matches() {
 		.stdout(predicate::str::contains("[1] Python.gitignore"))
 		.stdout(predicate::str::contains("Downloaded 'Python.gitignore'"));
 
-	let gitignore = helpers::get_gitignore(&dir);
+	let gitignore = helpers::get_gitignore(&dir).unwrap();
 	assert!(predicate::str::contains(".Python").eval(&gitignore));
+}
+
+#[test]
+fn can_run_find_and_quit() {
+	let (dir, _token) = helpers::create_temp_dir_with_token();
+	let mut cmd = helpers::create_cmd(&dir);
+
+	cmd.arg("find").arg("python").write_stdin("0");
+	cmd.assert().success();
+
+	let gitignore = helpers::get_gitignore(&dir);
+	assert_eq!(gitignore, None);
 }
 
 mod helpers {
@@ -81,21 +93,24 @@ mod helpers {
 			.tempfile_in(&dir)
 			.unwrap();
 
-		write!(file, "{}", read_from_file("token.txt")).unwrap();
+		write!(file, "{}", read_from_file("token.txt").unwrap()).unwrap();
 		(dir, file)
 	}
 
-	pub fn get_gitignore(dir: &TempDir) -> String {
+	pub fn get_gitignore(dir: &TempDir) -> Option<String> {
 		read_from_file(&format!("{}/.gitignore", dir.path().to_str().unwrap()))
 	}
 
-	fn read_from_file(path: &str) -> String {
+	fn read_from_file(path: &str) -> Option<String> {
 		let mut token = String::new();
-		File::open(path)
-			.unwrap()
-			.read_to_string(&mut token)
-			.unwrap();
+		let file = File::open(path);
 
-		token
+		match file {
+			Ok(mut file) => {
+				file.read_to_string(&mut token).unwrap();
+				Some(token)
+			}
+			Err(_) => None,
+		}
 	}
 }
