@@ -12,6 +12,9 @@ fn can_run_list() {
 		.stdout(predicate::str::contains("Rust.gitignore"))
 		.stdout(predicate::str::contains("Python.gitignore"))
 		.stdout(predicate::str::contains("Godot.gitignore"));
+
+	let gitignore = helpers::get_gitignore(&dir);
+	assert_eq!(gitignore, None);
 }
 
 #[test]
@@ -72,6 +75,7 @@ fn can_run_find_and_quit() {
 mod helpers {
 	use super::*;
 
+	use std::error::Error;
 	use std::fs::File;
 	use std::io::{Read, Write};
 	use tempfile::{Builder, NamedTempFile, TempDir};
@@ -98,19 +102,16 @@ mod helpers {
 	}
 
 	pub fn get_gitignore(dir: &TempDir) -> Option<String> {
-		read_from_file(&format!("{}/.gitignore", dir.path().to_str().unwrap()))
-	}
-
-	fn read_from_file(path: &str) -> Option<String> {
-		let mut token = String::new();
-		let file = File::open(path);
-
-		match file {
-			Ok(mut file) => {
-				file.read_to_string(&mut token).unwrap();
-				Some(token)
-			}
+		match read_from_file(&format!("{}/.gitignore", dir.path().to_str()?)) {
+			Ok(gitignore) => Some(gitignore),
 			Err(_) => None,
 		}
+	}
+
+	fn read_from_file(path: &str) -> Result<String, Box<dyn Error>> {
+		let mut token = String::new();
+		File::open(path)?.read_to_string(&mut token)?;
+
+		Ok(token)
 	}
 }
