@@ -72,6 +72,20 @@ fn can_run_find_and_quit() {
 	assert_eq!(gitignore, None);
 }
 
+#[test]
+fn can_run_find_no_results() {
+	let (dir, _token) = helpers::create_temp_dir_with_token();
+	let mut cmd = helpers::create_cmd(&dir);
+
+	cmd.arg("find").arg("dank");
+	cmd.assert()
+		.success()
+		.stdout(predicate::str::contains("No matches found for 'dank'"));
+
+	let gitignore = helpers::get_gitignore(&dir);
+	assert_eq!(gitignore, None);
+}
+
 mod helpers {
 	use super::*;
 
