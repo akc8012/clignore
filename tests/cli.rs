@@ -86,6 +86,8 @@ fn can_run_find_no_results() {
 	assert_eq!(gitignore, None);
 }
 
+// TODO: make a test to verify looping logic on invalid input
+
 mod helpers {
 	use super::*;
 
