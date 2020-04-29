@@ -30,8 +30,6 @@ impl Controller {
 	}
 
 	fn create_request_maker(token: Option<String>) -> Result<RealRequestMaker, ErrorBox> {
-		println!("{:?}", token);
-
 		let requester = RequestMaker::new(token);
 		let request_maker = GitHubRequestMaker::new(requester);
 
