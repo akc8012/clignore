@@ -2,6 +2,7 @@ use assert_cmd::Command;
 use predicates::prelude::*;
 
 #[test]
+#[ignore] // requires token.txt file
 fn assert_these_tests_are_authenticated() {
 	let dir = helpers::create_temp_dir();
 	let mut cmd = helpers::create_cmd(&dir);

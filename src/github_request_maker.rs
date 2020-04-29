@@ -88,6 +88,7 @@ mod tests {
 	use crate::test_request_maker::TestRequestMaker;
 
 	#[test]
+	#[ignore] // requires token.txt file
 	fn given_token_expect_authenticated() {
 		let token = AuthToken::new("token.txt").unwrap();
 		let requester = RequestMaker::new(Some(token));
