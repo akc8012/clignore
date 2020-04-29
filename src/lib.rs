@@ -34,7 +34,7 @@ impl Controller {
 	) -> Result<GitHubRequestMaker<RequestMaker>, ErrorBox> {
 		if create_token {
 			let token = AuthToken::new("token.txt")?;
-			let requester = RequestMaker::new(Some(token));
+			let requester = RequestMaker::new(Some(token.to_string()));
 
 			return Ok(GitHubRequestMaker::new(requester));
 		}

@@ -1,4 +1,3 @@
-use crate::auth_token::AuthToken;
 use crate::{error_box::ErrorBox, requester::Requester};
 
 use reqwest::{blocking, header};
@@ -6,7 +5,7 @@ use serde::de::DeserializeOwned;
 
 #[derive(Default)]
 pub struct RequestMaker {
-	token: Option<AuthToken>,
+	token: Option<String>,
 }
 
 impl Requester for RequestMaker {
@@ -26,7 +25,7 @@ impl Requester for RequestMaker {
 }
 
 impl RequestMaker {
-	pub fn new(token: Option<AuthToken>) -> RequestMaker {
+	pub fn new(token: Option<String>) -> RequestMaker {
 		RequestMaker { token }
 	}
 
