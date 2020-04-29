@@ -90,7 +90,7 @@ mod tests {
 	#[test]
 	fn given_token_expect_authenticated() {
 		let token = AuthToken::new("token.txt").unwrap();
-		let requester = RequestMaker::new(Some(token.to_string()));
+		let requester = RequestMaker::new(Some(token));
 		let request_maker = GitHubRequestMaker::new(requester);
 
 		let is_authenticated = request_maker.is_authenticated().unwrap();

@@ -1,3 +1,4 @@
+use auth_token::AuthToken;
 use choice_presenter::{ChoicePresenter, ChoiceResult};
 use error_box::ErrorBox;
 use file_finder::FileFinder;
@@ -24,13 +25,12 @@ pub struct Controller {
 }
 
 impl Controller {
-	// TODO: Take in an AuthToken, give it a ::from() method to accept ENV var string instead of parse file (::new())
-	pub fn new(token: Option<String>) -> Result<Controller, ErrorBox> {
+	pub fn new(token: Option<AuthToken>) -> Result<Controller, ErrorBox> {
 		let request_maker = Self::create_request_maker(token)?;
 		Ok(Controller { request_maker })
 	}
 
-	fn create_request_maker(token: Option<String>) -> Result<RealRequestMaker, ErrorBox> {
+	fn create_request_maker(token: Option<AuthToken>) -> Result<RealRequestMaker, ErrorBox> {
 		let requester = RequestMaker::new(token);
 		let request_maker = GitHubRequestMaker::new(requester);
 
