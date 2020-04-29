@@ -99,6 +99,17 @@ mod tests {
 	}
 
 	#[test]
+	#[should_panic]
+	#[ignore] // probably not great to spam github with bad creds
+	fn given_invalid_token_expect_panic() {
+		let token = AuthToken::from("92384729347");
+		let requester = RequestMaker::new(Some(token));
+		let request_maker = GitHubRequestMaker::new(requester);
+
+		request_maker.is_authenticated().unwrap();
+	}
+
+	#[test]
 	fn can_get_tree_id() {
 		let request_maker = GitHubRequestMaker::new(TestRequestMaker::new());
 
