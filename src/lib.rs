@@ -21,7 +21,6 @@ pub struct Controller {
 	request_maker: GitHubRequestMaker<RequestMaker>,
 }
 
-// TODO: Integration tests
 impl Controller {
 	pub fn new() -> Result<Controller, ErrorBox> {
 		let request_maker = Self::create_request_maker()?;
@@ -42,6 +41,13 @@ impl Controller {
 
 		Ok(request_maker)
 	}
+
+	// pub fn set_token(token_string: &str) {
+	// 	let token = AuthToken::new("token.txt");
+	// 	let requester = RequestMaker::new(Some(token));
+
+	// 	Ok(GitHubRequestMaker::new(requester))
+	// }
 
 	pub fn list_files(&self) -> Result<(), ErrorBox> {
 		for file_name in self.request_maker.get_file_names()? {

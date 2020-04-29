@@ -89,7 +89,7 @@ mod tests {
 	}
 
 	#[test]
-	#[ignore]
+	#[ignore] // This test is kinda slow and annoying, but it should work
 	fn given_bad_request_expect_error() {
 		let url = "https://jsonplaceholder.typicode.com/dank-memes";
 		assert!(

@@ -86,6 +86,22 @@ fn can_run_find_no_results() {
 	assert_eq!(gitignore, None);
 }
 
+#[test]
+fn can_run_find_with_token() {
+	let (dir, _token) = helpers::create_temp_dir_with_token();
+	let mut cmd = helpers::create_cmd(&dir);
+
+	cmd.arg("find")
+		.arg("swift")
+		.arg("--token=token bc846b0a23ac95c6f9d763b2d41dbb22d9163128");
+	cmd.assert()
+		.success()
+		.stdout(predicate::str::contains("Downloaded 'Swift.gitignore'"));
+
+	let gitignore = helpers::get_gitignore(&dir).unwrap();
+	assert!(predicate::str::contains("# CocoaPods").eval(&gitignore));
+}
+
 // TODO: make a test to verify looping logic on invalid input
 
 mod helpers {
