@@ -18,6 +18,7 @@ impl Requester for RequestMaker {
 		self.get_json_deserialized(url)
 	}
 
+	// TODO: deserialized method probably isn't needed
 	fn get_json_deserialized<T: DeserializeOwned>(&self, url: &str) -> Result<T, ErrorBox> {
 		let object: T = self.get_response(url)?.json()?;
 		Ok(object)
