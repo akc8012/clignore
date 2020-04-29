@@ -29,6 +29,18 @@ impl std::string::ToString for AuthToken {
 	}
 }
 
+impl From<&str> for AuthToken {
+	fn from(token: &str) -> Self {
+		let mut token = token.to_owned();
+
+		if !token.contains("token") {
+			token = format!("token {}", token);
+		}
+
+		AuthToken { token }
+	}
+}
+
 #[cfg(test)]
 mod tests {
 	use super::*;
@@ -43,5 +55,17 @@ mod tests {
 	#[should_panic(expected = "Could not find token file at path: bacon_powder.txt")]
 	fn auth_token_error_includes_path() {
 		AuthToken::new("bacon_powder.txt").unwrap();
+	}
+
+	#[test]
+	fn can_create_from_string_with_token_keyword() {
+		let token = AuthToken::from("token 32as492349d857df250");
+		assert_eq!(token.to_string(), "token 32as492349d857df250");
+	}
+
+	#[test]
+	fn can_create_from_string_without_token_keyword() {
+		let token = AuthToken::from("32as492349d857df250");
+		assert_eq!(token.to_string(), "token 32as492349d857df250");
 	}
 }
