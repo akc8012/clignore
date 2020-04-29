@@ -56,7 +56,6 @@ impl<T: Requester> GitHubRequestMaker<T> {
 		Ok(sha.to_string())
 	}
 
-	#[cfg(test)]
 	pub fn is_authenticated(&self) -> Result<bool, ErrorBox> {
 		Ok(self.get_rate_limit("limit")? == 5000)
 	}

@@ -1,4 +1,3 @@
-use auth_token::AuthToken;
 use choice_presenter::{ChoicePresenter, ChoiceResult};
 use error_box::ErrorBox;
 use file_finder::FileFinder;
@@ -18,28 +17,22 @@ mod request_maker;
 mod requester;
 mod test_request_maker;
 
+type RealRequestMaker = GitHubRequestMaker<RequestMaker>;
+
 pub struct Controller {
-	request_maker: GitHubRequestMaker<RequestMaker>,
+	request_maker: RealRequestMaker,
 }
 
 impl Controller {
-	// TODO: THIS FLAG IS TEMPORARY FOR TESTS!!!!!!!!!!!!!!!
-	pub fn new(create_token: bool) -> Result<Controller, ErrorBox> {
-		let request_maker = Self::create_request_maker(create_token)?;
+	pub fn new(token: Option<String>) -> Result<Controller, ErrorBox> {
+		let request_maker = Self::create_request_maker(token)?;
 		Ok(Controller { request_maker })
 	}
 
-	fn create_request_maker(
-		create_token: bool,
-	) -> Result<GitHubRequestMaker<RequestMaker>, ErrorBox> {
-		if create_token {
-			let token = AuthToken::new("token.txt")?;
-			let requester = RequestMaker::new(Some(token.to_string()));
+	fn create_request_maker(token: Option<String>) -> Result<RealRequestMaker, ErrorBox> {
+		println!("{:?}", token);
 
-			return Ok(GitHubRequestMaker::new(requester));
-		}
-
-		let requester = RequestMaker::new(None);
+		let requester = RequestMaker::new(token);
 		let request_maker = GitHubRequestMaker::new(requester);
 
 		// TODO: Handle unauthenticated error when we see limit has hit 0
@@ -53,12 +46,16 @@ impl Controller {
 		Ok(request_maker)
 	}
 
-	// pub fn set_token(token_string: &str) {
-	// 	let token = AuthToken::new("token.txt");
-	// 	let requester = RequestMaker::new(Some(token));
+	// TODO: Integration test to compare this against us having a token or not
+	pub fn show_is_authenticated(&self) -> Result<(), ErrorBox> {
+		let is_authenticated = self.request_maker.is_authenticated()?;
+		match is_authenticated {
+			true => println!("According to the GitHub API, you are authenticated!"),
+			false => println!("According to the GitHub API, you are not authenticated. Consider providing an authentication token.")
+		};
 
-	// 	Ok(GitHubRequestMaker::new(requester))
-	// }
+		Ok(())
+	}
 
 	pub fn list_files(&self) -> Result<(), ErrorBox> {
 		for file_name in self.request_maker.get_file_names()? {
