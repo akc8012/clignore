@@ -107,7 +107,7 @@ mod helpers {
 	use tempfile::TempDir;
 
 	pub fn create_cmd(dir: &TempDir) -> Command {
-		let mut cmd = Command::cargo_bin("ignore_cli").unwrap();
+		let mut cmd = Command::cargo_bin("clignore").unwrap();
 		cmd.current_dir(dir);
 
 		match read_from_file("token.txt") {

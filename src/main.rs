@@ -1,8 +1,8 @@
 use clap::{App, Arg, SubCommand};
-use ignore_cli::Controller;
+use clignore::Controller;
 
 fn main() {
-	let matches = App::new("ignore_cli")
+	let matches = App::new("clignore")
 		.version("0.1.0")
 		.about("Finds .gitignore template files")
 		.author("Andrew Colannino")

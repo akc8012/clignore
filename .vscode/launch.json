@@ -5,7 +5,7 @@
 			"name": "(Windows) Launch",
 			"type": "cppvsdbg",
 			"request": "launch",
-			"program": "${workspaceRoot}/target/debug/ignore_cli.exe",
+			"program": "${workspaceRoot}/target/debug/clignore.exe",
 			"args": [],
 			"stopAtEntry": false,
 			"cwd": "${workspaceRoot}",
@@ -16,7 +16,7 @@
 			"name": "(Linux / OS X) Launch",
 			"type": "lldb",
 			"request": "launch",
-			"program": "${workspaceRoot}/target/debug/ignore_cli",
+			"program": "${workspaceRoot}/target/debug/clignore",
 			"args": [],
 			"cwd": "${workspaceRoot}",
 		}
