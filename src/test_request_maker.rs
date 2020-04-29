@@ -1,19 +1,10 @@
 use crate::{error_box::ErrorBox, requester::Requester};
-use serde::de::DeserializeOwned;
 
 pub struct TestRequestMaker;
 
 impl Requester for TestRequestMaker {
-	fn get(&self, _url: &str) -> Result<String, ErrorBox> {
-		unimplemented!();
-	}
-
 	fn get_json(&self, url: &str) -> Result<serde_json::Value, ErrorBox> {
 		self.match_github_url(url)
-	}
-
-	fn get_json_deserialized<T: DeserializeOwned>(&self, _url: &str) -> Result<T, ErrorBox> {
-		unimplemented!();
 	}
 }
 
