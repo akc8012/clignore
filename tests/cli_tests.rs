@@ -2,8 +2,19 @@ use assert_cmd::Command;
 use predicates::prelude::*;
 
 #[test]
+fn assert_these_tests_are_authenticated() {
+	let dir = helpers::create_temp_dir();
+	let mut cmd = helpers::create_cmd(&dir);
+
+	cmd.arg("authenticated");
+	cmd.assert().success().stdout(predicate::str::contains(
+		"According to the GitHub API, you are authenticated!",
+	));
+}
+
+#[test]
 fn can_run_list() {
-	let (dir, _token) = helpers::create_temp_dir_with_token();
+	let dir = helpers::create_temp_dir();
 	let mut cmd = helpers::create_cmd(&dir);
 
 	cmd.arg("list");
@@ -19,7 +30,7 @@ fn can_run_list() {
 
 #[test]
 fn can_run_find_single_match() {
-	let (dir, _token) = helpers::create_temp_dir_with_token();
+	let dir = helpers::create_temp_dir();
 	let mut cmd = helpers::create_cmd(&dir);
 
 	cmd.arg("find").arg("rust");
@@ -33,7 +44,7 @@ fn can_run_find_single_match() {
 
 #[test]
 fn can_run_find_single_incomplete_match() {
-	let (dir, _token) = helpers::create_temp_dir_with_token();
+	let dir = helpers::create_temp_dir();
 	let mut cmd = helpers::create_cmd(&dir);
 
 	cmd.arg("find").arg("godo");
@@ -47,7 +58,7 @@ fn can_run_find_single_incomplete_match() {
 
 #[test]
 fn can_run_find_multiple_matches() {
-	let (dir, _token) = helpers::create_temp_dir_with_token();
+	let dir = helpers::create_temp_dir();
 	let mut cmd = helpers::create_cmd(&dir);
 
 	cmd.arg("find").arg("python").write_stdin("1");
@@ -62,7 +73,7 @@ fn can_run_find_multiple_matches() {
 
 #[test]
 fn can_run_find_and_quit() {
-	let (dir, _token) = helpers::create_temp_dir_with_token();
+	let dir = helpers::create_temp_dir();
 	let mut cmd = helpers::create_cmd(&dir);
 
 	cmd.arg("find").arg("python").write_stdin("0");
@@ -74,7 +85,7 @@ fn can_run_find_and_quit() {
 
 #[test]
 fn can_run_find_no_results() {
-	let (dir, _token) = helpers::create_temp_dir_with_token();
+	let dir = helpers::create_temp_dir();
 	let mut cmd = helpers::create_cmd(&dir);
 
 	cmd.arg("find").arg("dank");
@@ -86,51 +97,32 @@ fn can_run_find_no_results() {
 	assert_eq!(gitignore, None);
 }
 
-#[test]
-fn can_run_find_with_token() {
-	let (dir, _token) = helpers::create_temp_dir_with_token();
-	let mut cmd = helpers::create_cmd(&dir);
-
-	cmd.arg("find")
-		.arg("swift")
-		.arg("--token=token bc846b0a23ac95c6f9d763b2d41dbb22d9163128");
-	cmd.assert()
-		.success()
-		.stdout(predicate::str::contains("Downloaded 'Swift.gitignore'"));
-
-	let gitignore = helpers::get_gitignore(&dir).unwrap();
-	assert!(predicate::str::contains("# CocoaPods").eval(&gitignore));
-}
-
 // TODO: make a test to verify looping logic on invalid input
+// TODO: make a test asserting invalid token
 
 mod helpers {
 	use super::*;
 
 	use std::error::Error;
 	use std::fs::File;
-	use std::io::{Read, Write};
-	use tempfile::{Builder, NamedTempFile, TempDir};
+	use std::io::Read;
+	use tempfile::TempDir;
 
 	pub fn create_cmd(dir: &TempDir) -> Command {
 		let mut cmd = Command::cargo_bin("ignore_cli").unwrap();
 		cmd.current_dir(dir);
+
+		match read_from_file("token.txt") {
+			Ok(token) => {
+				cmd.env("TOKEN", token);
+			}
+			Err(e) => println!("WARNING: No token.txt file!!!!! {}", e),
+		};
 		cmd
 	}
 
-	pub fn create_temp_dir_with_token() -> (TempDir, NamedTempFile) {
-		let dir = TempDir::new().unwrap();
-
-		// TODO: This should no longer be necessary once the token is set as an ENV variable
-		let mut file = Builder::new()
-			.prefix("token")
-			.suffix(".txt")
-			.rand_bytes(0)
-			.tempfile_in(&dir)
-			.unwrap();
-
-		write!(file, "{}", read_from_file("token.txt").unwrap()).unwrap();
-		(dir, file)
+	pub fn create_temp_dir() -> TempDir {
+		TempDir::new().unwrap()
 	}
 
 	pub fn get_gitignore(dir: &TempDir) -> Option<String> {

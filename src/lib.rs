@@ -24,6 +24,7 @@ pub struct Controller {
 }
 
 impl Controller {
+	// TODO: Take in an AuthToken, give it a ::from() method to accept ENV var string instead of parse file (::new())
 	pub fn new(token: Option<String>) -> Result<Controller, ErrorBox> {
 		let request_maker = Self::create_request_maker(token)?;
 		Ok(Controller { request_maker })
@@ -44,7 +45,6 @@ impl Controller {
 		Ok(request_maker)
 	}
 
-	// TODO: Integration test to compare this against us having a token or not
 	pub fn show_is_authenticated(&self) -> Result<(), ErrorBox> {
 		let is_authenticated = self.request_maker.is_authenticated()?;
 		match is_authenticated {
