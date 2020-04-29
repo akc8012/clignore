@@ -79,12 +79,12 @@ impl Controller {
 	}
 
 	fn download_exact_match(&self, file_name: &str) -> Result<(), ErrorBox> {
-		println!("Found exact match '{}'\nDownloading...", file_name);
+		println!("Found match '{}'\nDownloading...", file_name);
 
 		let content = self.request_maker.get_file(file_name)?;
 		FileMaker::make_file(".gitignore", &content)?;
 
-		println!("Downloaded '{}'", file_name);
+		println!("Downloaded .gitignore for '{}'", file_name.replace(".gitignore", ""));
 		Ok(())
 	}
 

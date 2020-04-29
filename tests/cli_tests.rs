@@ -36,7 +36,7 @@ fn can_run_find_single_match() {
 	cmd.arg("find").arg("rust");
 	cmd.assert()
 		.success()
-		.stdout(predicate::str::contains("Downloaded 'Rust.gitignore'"));
+		.stdout(predicate::str::contains("Downloaded .gitignore for 'Rust'"));
 
 	let gitignore = helpers::get_gitignore(&dir).unwrap();
 	assert!(predicate::str::contains("/target/").eval(&gitignore));
@@ -50,7 +50,7 @@ fn can_run_find_single_incomplete_match() {
 	cmd.arg("find").arg("godo");
 	cmd.assert()
 		.success()
-		.stdout(predicate::str::contains("Downloaded 'Godot.gitignore'"));
+		.stdout(predicate::str::contains("Downloaded .gitignore for 'Godot'"));
 
 	let gitignore = helpers::get_gitignore(&dir).unwrap();
 	assert!(predicate::str::contains("export.cfg").eval(&gitignore));
@@ -65,7 +65,7 @@ fn can_run_find_multiple_matches() {
 	cmd.assert()
 		.success()
 		.stdout(predicate::str::contains("[1] Python.gitignore"))
-		.stdout(predicate::str::contains("Downloaded 'Python.gitignore'"));
+		.stdout(predicate::str::contains("Downloaded .gitignore for 'Python'"));
 
 	let gitignore = helpers::get_gitignore(&dir).unwrap();
 	assert!(predicate::str::contains(".Python").eval(&gitignore));
