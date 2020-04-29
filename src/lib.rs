@@ -1,3 +1,4 @@
+use auth_token::AuthToken;
 use choice_presenter::{ChoicePresenter, ChoiceResult};
 use error_box::ErrorBox;
 use file_finder::FileFinder;
@@ -22,12 +23,22 @@ pub struct Controller {
 }
 
 impl Controller {
-	pub fn new() -> Result<Controller, ErrorBox> {
-		let request_maker = Self::create_request_maker()?;
+	// TODO: THIS FLAG IS TEMPORARY FOR TESTS!!!!!!!!!!!!!!!
+	pub fn new(create_token: bool) -> Result<Controller, ErrorBox> {
+		let request_maker = Self::create_request_maker(create_token)?;
 		Ok(Controller { request_maker })
 	}
 
-	fn create_request_maker() -> Result<GitHubRequestMaker<RequestMaker>, ErrorBox> {
+	fn create_request_maker(
+		create_token: bool,
+	) -> Result<GitHubRequestMaker<RequestMaker>, ErrorBox> {
+		if create_token {
+			let token = AuthToken::new("token.txt")?;
+			let requester = RequestMaker::new(Some(token));
+
+			return Ok(GitHubRequestMaker::new(requester));
+		}
+
 		let requester = RequestMaker::new(None);
 		let request_maker = GitHubRequestMaker::new(requester);
 

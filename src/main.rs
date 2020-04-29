@@ -31,7 +31,7 @@ fn main() {
 		.get_matches();
 
 	// TODO: Quit unwrapping in here, actually handle the errors (print output?)
-	let controller = Controller::new().unwrap();
+	let controller = Controller::new(true).unwrap();
 
 	if matches.is_present("list") {
 		controller.list_files().unwrap();
