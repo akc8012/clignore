@@ -98,8 +98,6 @@ fn can_run_find_no_results() {
 }
 
 // TODO: make a test to verify looping logic on invalid input
-// TODO: make a test asserting invalid token
-
 mod helpers {
 	use super::*;
 
