@@ -52,3 +52,4 @@ Cargo will build the CLIgnore binary and place it in `$HOME/.cargo`. You'll then
 - Haven't done any testing on Windows or Mac. Should probably do that.
 - Need to determine the minimum version of rustc necessary to build (add to readme)
 - The error handling is pretty lazy. I'm just doing a bunch of `unwrap`s in `main`, so while errors are displayed to the user, they're not very pretty. 
+- All the source files are hanging out at the root `src/` because I got confused by the module system. Ideally I'd like to figure this out and move things into folders.
