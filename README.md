@@ -9,7 +9,32 @@ CLIgnore is a simple command-line tool to find .gitignore files based on your la
 ## Usage
 ![Usage Screenshot](screenshot.png)
 
-Use `clignore find` to search based on your langauge or framework, and select the file you need. If clignore finds only 1 file matching what you search, it'll automatically download.
+### Find
+Use `clignore find` to search based on your langauge or framework, and select the file you need. If clignore finds only 1 file matching your search, it'll be automatically download.
+
+### Everything else
+```
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+ARGS:
+    <token>    Sets the GitHub authorization token [env: TOKEN=]
+
+SUBCOMMANDS:
+    authenticated    Checks the GitHub API to see if you have an authorization token present
+    find             Finds files by name
+    help             Prints this message or the help of the given subcommand(s)
+    list             Lists all gitignore template files
+
+SUBCOMMANDS:
+
+    authenticated    Checks the GitHub API to see if you have an authorization token present
+    
+	find             Finds files by name
+    help             Prints this message or the help of the given subcommand(s)
+    list             Lists all gitignore template files
+```
 
 ## Installation
 
