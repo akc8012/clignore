@@ -37,4 +37,5 @@ Authenticated requests can make up to 5000 requests per hour. More on that [here
 
 ## Roadmap
 - Some kind of CI/CD would be nice
+- Along that same line, it would be helpful to have pre-built binaries somewhere
 - The error handling is pretty lazy. I'm just doing a bunch of `unwrap`s in `main`, so while errors are displayed to the user, they're not very pretty. 
