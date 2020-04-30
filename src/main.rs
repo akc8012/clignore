@@ -3,7 +3,7 @@ use clignore::Controller;
 
 fn main() {
 	let matches = App::new("clignore")
-		.version("0.1.0")
+		.version("0.1.2")
 		.about("Finds .gitignore template files")
 		.author("Andrew Colannino")
 		.arg(
