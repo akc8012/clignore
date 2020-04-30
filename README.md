@@ -29,13 +29,25 @@ SUBCOMMANDS:
 ```
 
 ### Setting an [OAuth2](https://developer.github.com/apps/building-oauth-apps/) token
-The GitHub API rate-limits users to 60 requests in 1 hour. If, for some reason, you need more than this, CLIgnore allows you to set an OAuth2 token via an enviornment variable: `TOKEN=<your super-secret token here> clignore find python`
+The GitHub API rate-limits users to 60 requests in 1 hour. If, for some reason, you need more than this, CLIgnore allows you to set an OAuth2 token via an enviornment variable:
+```
+TOKEN=<your super-secret token here> clignore find python
+```
 
 Authenticated requests can make up to 5000 requests per hour. More on that [here](https://developer.github.com/v3/#rate-limiting).
 
 ## Installation
+CLIgnore is written in [Rust](https://www.rust-lang.org/). The recommended way to install Rust is from the [official download page](https://www.rust-lang.org/tools/install).
+
+Once Rust is installed, use `cargo install`:
+```
+cargo install clignore
+```
+
+Cargo will build the CLIgnore binary and place it in `$HOME/.cargo`. You'll then (hopefully) be able to use `clignore`.
 
 ## Roadmap
 - Some kind of CI/CD would be nice
+- Haven't done any testing on Windows or Mac. Should probably do that.
 - Along that same line, it would be helpful to have pre-built binaries somewhere
 - The error handling is pretty lazy. I'm just doing a bunch of `unwrap`s in `main`, so while errors are displayed to the user, they're not very pretty. 
