@@ -1,6 +1,6 @@
 [package]
 name = "clignore"
-version = "0.1.0"
+version = "0.1.1"
 description = "Simple CLI tool to find .gitignore files based on your language or framework"
 authors = ["Andrew Colannino <akc8012@gmail.com>"]
 homepage = "https://github.com/akc8012/clignore"
