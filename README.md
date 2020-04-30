@@ -36,9 +36,7 @@ SUBCOMMANDS:
 ```
 
 ### Setting an auth token
-If, for some reason, you need to make over 60 requests in 1 hour, CLIgnore allows you to set an auth token via an enviornment variable:
-
-`TOKEN=9431e108b67d1efa9df54e6351da1951bcd9be32 clignore find python`
+If, for some reason, you need to make over 60 requests in 1 hour, CLIgnore allows you to set an auth token via an enviornment variable: `TOKEN=9431e108b67d1efa9df54e6351da1951bcd9be32 clignore find python`
 
 ## Installation
 
