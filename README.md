@@ -26,13 +26,6 @@ SUBCOMMANDS:
     find             Finds files by name
     help             Prints this message or the help of the given subcommand(s)
     list             Lists all gitignore template files
-
-SUBCOMMANDS:
-
-    authenticated    Checks the GitHub API to see if you have an authorization token present
-    find             Finds files by name
-    help             Prints this message or the help of the given subcommand(s)
-    list             Lists all gitignore template files
 ```
 
 ### Setting an auth token
