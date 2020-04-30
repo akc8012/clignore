@@ -19,7 +19,7 @@ FLAGS:
     -V, --version    Prints version information
 
 ARGS:
-    <token>    Sets the GitHub authorization token [env: TOKEN=]
+    <token>    Sets the OAuth2 token for authenticated requests [env: TOKEN=]
 
 SUBCOMMANDS:
     authenticated    Checks the GitHub API to see if you have an authorization token present
@@ -28,8 +28,10 @@ SUBCOMMANDS:
     list             Lists all gitignore template files
 ```
 
-### Setting an auth token
-If, for some reason, you need to make over 60 requests in 1 hour, CLIgnore allows you to set an auth token via an enviornment variable: `TOKEN=<your super-secret token here> clignore find python`
+### Setting an OAuth2 token
+The GitHub API rate-limits users to 60 requests in 1 hour. If, for some reason, you need more than this, CLIgnore allows you to set an OAuth2 token via an enviornment variable: `TOKEN=<your super-secret token here> clignore find python`
+
+Authenticated requests can make up to 5000 requests per hour. More on that [here](https://developer.github.com/v3/#rate-limiting).
 
 ## Installation
 

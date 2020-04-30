@@ -9,7 +9,7 @@ fn main() {
 		.arg(
 			Arg::with_name("token")
 				.env("TOKEN")
-				.help("Sets the GitHub authorization token"),
+				.help("Sets the OAuth2 token for authenticated requests"),
 		)
 		.subcommand(
 			SubCommand::with_name("authenticated")
