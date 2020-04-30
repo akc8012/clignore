@@ -40,3 +40,10 @@ EXCEPT: If we use the (optional) blocking module, we dont need this junk :)
 
 TODO:
   Look into failure crate (easier error handling?)
+
+
+Use exa as an example to download and install from cargo (crates.io)
+	"Cargo will build the exa binary and place it in $HOME/.cargo (this location can be overridden by setting the --root option)."
+Has a CI build, but may not be necessary?
+https://github.com/ogham/exa
+
