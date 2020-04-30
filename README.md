@@ -10,7 +10,7 @@ CLIgnore is a simple command-line tool to find .gitignore files based on your la
 ### Find
 ![Usage Screenshot](screenshot.png)
 
-Use `clignore find` to search based on your langauge or framework, and select the file you need. If clignore finds only 1 file matching your search, it'll be automatically download.
+Use `clignore find` to search based on your langauge or framework, and select the file you need. If CLIgnore finds only 1 file matching your search, it'll be automatically download.
 
 ### Everything else
 ```
@@ -36,7 +36,12 @@ SUBCOMMANDS:
 ```
 
 ### Setting an auth token
+If, for some reason, you need to make over 60 requests in 1 hour, CLIgnore allows you to set an auth token via an enviornment variable:
+
+`TOKEN=9431e108b67d1efa9df54e6351da1951bcd9be32 clignore find python`
 
 ## Installation
 
 ## Roadmap
+- Some kind of CI/CD would be nice
+- The error handling is pretty lazy. I'm just doing a bunch of `unwrap`s in `main`, so while errors are displayed to the user, they're not very pretty. 
