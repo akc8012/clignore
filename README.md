@@ -7,9 +7,9 @@ CLIgnore is a simple command-line tool to find .gitignore files based on your la
 .gitignore files are annoying and I hate them. While many IDEs and version control tools generate .gitignore files for you, that's not always the case. So instead of constantly Googling for the gitignore repo, finding the right template, copying the template, and pasting it in my project *like a schmuck*... I made a tool that does it for me (and you!)
 
 ## Usage
+### Find
 ![Usage Screenshot](screenshot.png)
 
-### Find
 Use `clignore find` to search based on your langauge or framework, and select the file you need. If clignore finds only 1 file matching your search, it'll be automatically download.
 
 ### Everything else
@@ -31,7 +31,7 @@ SUBCOMMANDS:
 
     authenticated    Checks the GitHub API to see if you have an authorization token present
 
-	find             Finds files by name
+    find             Finds files by name
     help             Prints this message or the help of the given subcommand(s)
     list             Lists all gitignore template files
 ```
