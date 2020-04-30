@@ -8,6 +8,7 @@ CLIgnore is a simple command-line tool to find .gitignore files based on your la
 
 ## Usage
 ![Usage Screenshot](screenshot.png)
+
 Use `clignore find` to search based on your langauge or framework, and select the file you need. If clignore finds only 1 file matching what you search, it'll automatically download.
 
 ## Installation
