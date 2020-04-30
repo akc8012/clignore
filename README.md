@@ -35,6 +35,8 @@ SUBCOMMANDS:
     list             Lists all gitignore template files
 ```
 
+### Setting an auth token
+
 ## Installation
 
 ## Roadmap
