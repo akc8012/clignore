@@ -28,7 +28,7 @@ SUBCOMMANDS:
     list             Lists all gitignore template files
 ```
 
-### Setting an OAuth2 token
+### Setting an [OAuth2](https://developer.github.com/apps/building-oauth-apps/) token
 The GitHub API rate-limits users to 60 requests in 1 hour. If, for some reason, you need more than this, CLIgnore allows you to set an OAuth2 token via an enviornment variable: `TOKEN=<your super-secret token here> clignore find python`
 
 Authenticated requests can make up to 5000 requests per hour. More on that [here](https://developer.github.com/v3/#rate-limiting).
