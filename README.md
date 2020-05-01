@@ -1,4 +1,4 @@
-# CLIgnore
+# CLIgnore [![Crates.io](https://img.shields.io/badge/crates.io-v0.1.2-orange)](https://crates.io/crates/clignore)
 > *clignorance is bliss*
 
 CLIgnore is a simple command-line tool to find .gitignore files based on your language or framework. It uses the [GitHub API](https://developer.github.com/v3/) to search for template files from GitHub's official [repo](https://github.com/github/gitignore), so you can automagically download and use them in your projects in no-time.
@@ -10,7 +10,7 @@ CLIgnore is a simple command-line tool to find .gitignore files based on your la
 ### Find
 ![Usage Screenshot](screenshot.png)
 
-Use `clignore find` to search based on your langauge or framework, and select the file you need. If CLIgnore finds only 1 file matching your search, it'll be automatically download.
+Use `clignore find` to search based on your language or framework, and select the file you need. If CLIgnore finds only 1 file matching your search, it'll be automatically downloaded.
 
 ### Everything else
 ```
@@ -29,7 +29,7 @@ SUBCOMMANDS:
 ```
 
 ### Setting an [OAuth2](https://developer.github.com/apps/building-oauth-apps/) token
-The GitHub API rate-limits users to 60 requests in 1 hour. If, for some reason, you need more than this, CLIgnore allows you to set an OAuth2 token via an enviornment variable:
+The GitHub API rate-limits users to 60 requests in 1 hour. If, for some reason, you need more than this, CLIgnore allows you to set an OAuth2 token via an environment variable:
 ```
 TOKEN=<your super-secret token here> clignore find python
 ```
@@ -49,7 +49,7 @@ Cargo will build the CLIgnore binary and place it in `$HOME/.cargo`. You'll then
 ## Roadmap
 - Some kind of CI/CD would be nice
 - Along that same line, it would be helpful to have pre-built binaries somewhere
-- Haven't done any testing on Windows or Mac. Should probably do that.
+- Haven't done any testing on ~~Windows or~~ Mac. Should probably do that. **(Update: Tested on Windows, it works!)**
 - Need to determine the minimum version of rustc necessary to build (add to readme)
 - The error handling is pretty lazy. I'm just doing a bunch of `unwrap`s in `main`, so while errors are displayed to the user, they're not very pretty. 
 - All the source files are hanging out at the root `src/` because I got confused by the module system. Ideally I'd like to figure this out and move things into folders.
