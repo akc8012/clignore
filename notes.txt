@@ -39,6 +39,7 @@ EXCEPT: If we use the (optional) blocking module, we dont need this junk :)
 
 
 TODO:
+  A new-line is added to all files... This doesn't really matter, but it's annoying. I should fix it.
   Look into failure crate (easier error handling?)
 
 
